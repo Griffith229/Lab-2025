@@ -1,0 +1,21 @@
+function calculateLateralSurfaceArea() {
+    const baseSide = parseFloat(prompt('Введіть довжину сторони квадрата (основи) в см:'));
+    const prismHeight = parseFloat(prompt('Введіть довжину бічного ребра призми (висоту) в см:'));
+
+    if (isNaN(baseSide) || isNaN(prismHeight)) {
+        alert('Будь ласка, введіть коректні числові значення!');
+        return;
+    }
+
+    if (baseSide <= 0 || prismHeight <= 0) {
+        alert('Значення повинні бути додатніми!');
+        return;
+    }
+   
+    const perimeter = 4 * baseSide; 
+    const lateralSurfaceArea = perimeter * prismHeight;
+
+    alert(`Площа бічної поверхні призми: ${lateralSurfaceArea.toFixed(2)} см²`);
+}
+
+calculateLateralSurfaceArea();
