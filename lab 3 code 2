@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обчислення загального опору паралельного з'єднання</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+        }
+        .formula {
+            font-family: monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 3px;
+            margin: 10px 0;
+        }
+        .highlight {
+            color: #d35400;
+            font-weight: bold;
+        }
+        h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Обчислення загального опору паралельного з'єднання</h2>
+    <p>Оберіть кількість однакових резисторів (N) та введіть опір одного резистора (R):</p>
+    
+    <div class="input-group">
+        <label for="n">Кількість резисторів (N):</label>
+        <select id="n">
+            <option value="1">1 резистор</option>
+            <option value="2">2 резистори</option>
+            <option value="3">3 резистори</option>
+            <option value="4">4 резистори</option>
+            <option value="5">5 резисторів</option>
+        </select>
+    </div>
+    
+    <div class="input-group">
+        <label for="r">Опір одного резистора (R), Ом:</label>
+        <input type="number" id="r" step="any" min="0.1" value="100" placeholder="Наприклад: 100">
+    </div>
+    
+    <button onclick="calculateResistance()">Обчислити загальний опір</button>
+    
+    <div id="result" class="result"></div>
+
+    <script>
+        function calculateResistance() {
+            const N = parseInt(document.getElementById('n').value);
+            const R = parseFloat(document.getElementById('r').value);
+            
+            if (isNaN(N) || N < 1 || N > 5) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="error">Будь ласка, оберіть кількість резисторів від 1 до 5!</div>';
+                return;
+            }
+            
+            if (isNaN(R) || R <= 0) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="error">Опір резистора повинен бути додатнім числом!</div>';
+                return;
+            }
+            
+            let totalResistance;
+            let explanation;
+            let formula;
+            
+            switch(N) {
+                case 1:
+                    totalResistance = R;
+                    formula = 'R<sub>заг</sub> = R';
+                    explanation = 'При N=1 (один резистор) загальний опір дорівнює опору цього резистора.';
+                    break;
+                    
+                case 2:
+                    totalResistance = R / 2;
+                    formula = 'R<sub>заг</sub> = R / 2';
+                    explanation = 'При N=2 (два паралельні резистори) загальний опір вдвічі менший за опір одного резистора.';
+                    break;
+                    
+                case 3:
+                    totalResistance = R / 3;
+                    formula = 'R<sub>заг</sub> = R / 3';
+                    explanation = 'При N=3 (три паралельні резистори) загальний опір у три рази менший за опір одного резистора.';
+                    break;
+                    
+                case 4:
+                    totalResistance = R / 4;
+                    formula = 'R<sub>заг</sub> = R / 4';
+                    explanation = 'При N=4 (чотири паралельні резистори) загальний опір у чотири рази менший за опір одного резистора.';
+                    break;
+                    
+                case 5:
+                    totalResistance = R / 5;
+                    formula = 'R<sub>заг</sub> = R / 5';
+                    explanation = 'При N=5 (п\'ять паралельних резисторів) загальний опір у п\'ять разів менший за опір одного резистора.';
+                    break;
+                    
+                default:
+                    document.getElementById('result').innerHTML = 
+                        '<div class="error">Непідтримуване значення N!</div>';
+                    return;
+            }
+            
+            let resultHTML = '<h3>Результати обчислення:</h3>';
+            
+            resultHTML += `<div class="formula">
+                <strong>Формула:</strong> ${formula}
+            </div>`;
+            
+            resultHTML += `<p><strong>Вихідні дані:</strong><br>
+                Кількість резисторів: N = ${N}<br>
+                Опір одного резистора: R = ${R.toFixed(2)} Ом</p>`;
+            
+            resultHTML += `<p><strong>Загальний опір:</strong><br>
+                <span class="highlight">R<sub>заг</sub> = ${totalResistance.toFixed(2)} Ом</span></p>`;
+            
+            resultHTML += `<p><strong>Пояснення:</strong><br>${explanation}</p>`;
+            
+            resultHTML += '<p><strong>Загальна формула для N однакових резисторів паралельно:</strong><br>';
+            resultHTML += '<div class="formula">R<sub>заг</sub> = R / N</div></p>';
+            
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+        
+        window.onload = calculateResistance;
+    </script>
+</body>
+</html>
