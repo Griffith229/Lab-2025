@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Класи MAN та Sprinter - Нащадки Lorry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a3d62, #1e3799);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #e74c3c, #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .type-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .type-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .type-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .type-tab.active {
+            border-color: #3498db;
+            background: #e3f2fd;
+            color: #2980b9;
+        }
+
+        .lorries-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .lorry-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid transparent;
+        }
+
+        .lorry-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .lorry-card.man::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .lorry-card.sprinter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+
+        .lorry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .lorry-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lorry-icon {
+            font-size: 2em;
+        }
+
+        .lorry-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .man .lorry-badge {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        .sprinter .lorry-badge {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+
+        .lorry-info {
+            margin-bottom: 25px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+
+        .man .info-item {
+            border-left-color: #e74c3c;
+        }
+
+        .sprinter .info-item {
+            border-left-color: #3498db;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .special-features {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background: #2ecc71;
+            box-shadow: 0 0 10px #2ecc71;
+        }
+
+        .status-inactive {
+            background: #e74c3c;
+            box-shadow: 0 0 10px #e74c3c;
+        }
+
+        .status-moving {
+            background: #3498db;
+            box-shadow: 0 0 10px #3498db;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-special {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .control-panel {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .control-panel h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .stat-card.blue {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .stat-card.green {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .stat-card.purple {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .console {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            padding: 10px;
+            border-bottom: 1px solid #34495e;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .log-time {
+            color: #95a5a6;
+            margin-right: 15px;
+        }
+
+        .log-info { color: #3498db; }
+        .log-success { color: #2ecc71; }
+        .log-warning { color: #f39c12; }
+        .log-error { color: #e74c3c; }
+
+        .lorry-visual {
+            position: relative;
+            height: 150px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 2px solid #ddd;
+        }
+
+        .lorry-body {
+            position: absolute;
+            top: 50%;
+            left: 20%;
+            height: 60px;
+            background: #e74c3c;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            transition: left 0.5s ease;
+        }
+
+        .man .lorry-body {
+            background: #e74c3c;
+            width: 250px;
+        }
+
+        .sprinter .lorry-body {
+            background: #3498db;
+            width: 180px;
+        }
+
+        .lorry-cabin {
+            position: absolute;
+            top: 50%;
+            left: calc(20% + 230px);
+            width: 70px;
+            height: 75px;
+            background: #c0392b;
+            border-radius: 5px;
+            transform: translateY(-50%);
+        }
+
+        .sprinter .lorry-cabin {
+            left: calc(20% + 160px);
+            background: #2980b9;
+            height: 80px;
+        }
+
+        .lorry-wheels {
+            position: absolute;
+            bottom: 10px;
+            width: 30px;
+            height: 30px;
+            background: #2c3e50;
+            border-radius: 50%;
+        }
+
+        .man .wheel-1 { left: calc(20% + 30px); }
+        .man .wheel-2 { left: calc(20% + 220px); }
+        .man .wheel-3 { left: calc(20% + 270px); }
+
+        .sprinter .wheel-1 { left: calc(20% + 20px); }
+        .sprinter .wheel-2 { left: calc(20% + 150px); }
+        .sprinter .wheel-3 { left: calc(20% + 190px); }
+
+        .cargo-visual {
+            position: absolute;
+            top: 50%;
+            left: 20%;
+            height: 50px;
+            background: #f39c12;
+            border-radius: 5px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .man .cargo-visual {
+            width: 230px;
+        }
+
+        .sprinter .cargo-visual {
+            width: 160px;
+        }
+
+        .empty-cargo {
+            background: #bdc3c7;
+            color: #7f8c8d;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            transition: width 0.3s ease;
+        }
+
+        .fuel-bar {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .sprinter .fuel-bar {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚚 Класи MAN та Sprinter - Нащадки Lorry</h1>
+            <p class="subtitle">Демонстрація наслідування в об'єктно-орієнтованому програмуванні з додатковими полями та методами</p>
+        </div>
+
+        <div class="type-tabs">
+            <div class="type-tab active" onclick="showType('all')">📊 Всі вантажівки</div>
+            <div class="type-tab" onclick="showType('man')">🚛 MAN (Важкі)</div>
+            <div class="type-tab" onclick="showType('sprinter')">🚐 Sprinter (Легкі)</div>
+        </div>
+
+        <div class="control-panel">
+            <h2>⚙️ Створення нової вантажівки</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="lorryType">Тип вантажівки:</label>
+                    <select id="lorryType">
+                        <option value="man">MAN (Важка вантажівка)</option>
+                        <option value="sprinter">Sprinter (Легка вантажівка)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Марка:</label>
+                    <input type="text" id="brand" placeholder="Буде заповнено автоматично" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="model">Модель:</label>
+                    <input type="text" id="model" placeholder="Введіть модель" value="TGX">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="maxLoad">Макс. вантаж (тонн):</label>
+                    <input type="number" id="maxLoad" min="1" max="50" value="25">
+                </div>
+                <div class="form-group">
+                    <label for="fuelCapacity">Ємність бака (л):</label>
+                    <input type="number" id="fuelCapacity" min="100" max="1000" value="600">
+                </div>
+                <div class="form-group">
+                    <label for="year">Рік випуску:</label>
+                    <input type="number" id="year" min="2000" max="2024" value="2022">
+                </div>
+                <div class="form-group">
+                    <label for="licensePlate">Номерний знак:</label>
+                    <input type="text" id="licensePlate" placeholder="Наприклад: AA 1234 BB" value="AA 1234 BB">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="createNewLorry()" style="width: 100%; padding: 15px; margin-top: 20px;">
+                🚚 Створити нову вантажівку
+            </button>
+        </div>
+
+        <div id="lorriesContainer" class="lorries-container">
+        </div>
+
+        <div class="control-panel">
+            <h2>📊 Статистика флоту</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalLorries">0</div>
+                    <div class="stat-label">Всього вантажівок</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-value" id="manCount">0</div>
+                    <div class="stat-label">Вантажівок MAN</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-value" id="sprinterCount">0</div>
+                    <div class="stat-label">Вантажівок Sprinter</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-value" id="totalCargo">0</div>
+                    <div class="stat-label">Загальний вантаж (тонн)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <h2>📝 Журнал подій</h2>
+            <div id="console" class="console">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Lorry {
+            #id;
+            #vin;
+            #mileage = 0;
+            
+            constructor(brand, model, maxLoad, fuelCapacity, year, licensePlate) {
+                this.#id = Date.now() + Math.random();
+                this.#vin = this.#generateVIN();
+                
+                this.brand = brand;
+                this.model = model;
+                this.maxLoad = maxLoad;
+                this.fuelCapacity = fuelCapacity;
+                this.year = year;
+                this.licensePlate = licensePlate;
+                
+                this.currentLoad = 0;
+                this.currentFuel = fuelCapacity;
+                this.isEngineOn = false;
+                this.isMoving = false;
+                this.currentSpeed = 0;
+                this.location = "База";
+                this.destination = "";
+                this.maintenanceRequired = false;
+                this.lastMaintenance = new Date();
+                
+                this.logEvent(`Вантажівка ${this.brand} ${this.model} створена`);
+            }
+            
+            #generateVIN() {
+                const chars = 'ABCDEFGHJKLMNPRSTUVWXYZ0123456789';
+                let vin = '';
+                for (let i = 0; i < 17; i++) {
+                    vin += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return vin;
+            }
+            
+            
+            startEngine() {
+                if (this.isEngineOn) {
+                    this.logEvent(`Двигун вже заведений`, 'warning');
+                    return false;
+                }
+                
+                if (this.currentFuel <= 0) {
+                    this.logEvent(`Немає палива! Неможливо завести двигун`, 'error');
+                    return false;
+                }
+                
+                this.isEngineOn = true;
+                this.logEvent(`Двигун заведено`);
+                return true;
+            }
+            
+            stopEngine() {
+                if (!this.isEngineOn) {
+                    this.logEvent(`Двигун вже заглушено`, 'warning');
+                    return false;
+                }
+                
+                if (this.isMoving) {
+                    this.logEvent(`Неможливо заглушити двигун під час руху!`, 'error');
+                    return false;
+                }
+                
+                this.isEngineOn = false;
+                this.currentSpeed = 0;
+                this.logEvent(`Двигун заглушено`);
+                return true;
+            }
+            
+            startMoving(destination, speed = 60) {
+                if (!this.isEngineOn) {
+                    this.logEvent(`Спочатку заведіть двигун!`, 'error');
+                    return false;
+                }
+                
+                if (this.isMoving) {
+                    this.logEvent(`Вантажівка вже в дорозі`, 'warning');
+                    return false;
+                }
+                
+                if (this.currentFuel <= this.fuelCapacity * 0.1) {
+                    this.logEvent(`Замало палива для початку руху!`, 'error');
+                    return false;
+                }
+                
+                this.isMoving = true;
+                this.currentSpeed = speed;
+                this.destination = destination;
+                this.logEvent(`Початок руху до "${destination}" зі швидкістю ${speed} км/год`);
+                return true;
+            }
+            
+            stopMoving() {
+                if (!this.isMoving) {
+                    this.logEvent(`Вантажівка вже зупинена`, 'warning');
+                    return false;
+                }
+                
+                this.isMoving = false;
+                this.currentSpeed = 0;
+                this.location = this.destination;
+                this.destination = "";
+                this.logEvent(`Прибули до "${this.location}"`);
+                return true;
+            }
+            
+            loadCargo(weight) {
+                if (this.isMoving) {
+                    this.logEvent(`Неможливо завантажити вантаж під час руху!`, 'error');
+                    return false;
+                }
+                
+                if (this.currentLoad + weight > this.maxLoad) {
+                    this.logEvent(`Перевантаження! Максимум: ${this.maxLoad}т`, 'error');
+                    return false;
+                }
+                
+                this.currentLoad += weight;
+                this.logEvent(`Завантажено ${weight}т. Поточний вантаж: ${this.currentLoad}/${this.maxLoad}т`);
+                return true;
+            }
+            
+            unloadCargo(weight) {
+                if (this.isMoving) {
+                    this.logEvent(`Неможливо розвантажити вантаж під час руху!`, 'error');
+                    return false;
+                }
+                
+                if (this.currentLoad - weight < 0) {
+                    this.logEvent(`Недостатньо вантажу для розвантаження!`, 'error');
+                    return false;
+                }
+                
+                this.currentLoad -= weight;
+                this.logEvent(`Розвантажено ${weight}т. Поточний вантаж: ${this.currentLoad}/${this.maxLoad}т`);
+                return true;
+            }
+            
+            refuel(amount) {
+                if (this.isMoving) {
+                    this.logEvent(`Неможливо заправити під час руху!`, 'error');
+                    return false;
+                }
+                
+                const newFuel = this.currentFuel + amount;
+                if (newFuel > this.fuelCapacity) {
+                    this.currentFuel = this.fuelCapacity;
+                    this.logEvent(`Бак заправлено повністю: ${this.fuelCapacity}л`);
+                } else {
+                    this.currentFuel = newFuel;
+                    this.logEvent(`Заправлено ${amount}л. Поточне паливо: ${this.currentFuel}/${this.fuelCapacity}л`);
+                }
+                return true;
+            }
+            
+            performMaintenance() {
+                if (this.isMoving) {
+                    this.logEvent(`Неможливо провести ТО під час руху!`, 'error');
+                    return false;
+                }
+                
+                this.maintenanceRequired = false;
+                this.lastMaintenance = new Date();
+                this.logEvent(`Технічне обслуговування проведено`);
+                return true;
+            }
+            
+            simulateMovement() {
+                if (!this.isMoving) return;
+                
+                const fuelConsumption = (0.1 + (this.currentLoad / this.maxLoad) * 0.2) * (this.currentSpeed / 100);
+                this.currentFuel -= fuelConsumption;
+                this.#mileage += this.currentSpeed / 60;
+                
+                if (this.currentFuel <= 0) {
+                    this.currentFuel = 0;
+                    this.isMoving = false;
+                    this.currentSpeed = 0;
+                    this.logEvent(`Закінчилось паливо! Вантажівка зупинена`, 'error');
+                }
+                
+                const daysSinceMaintenance = (new Date() - this.lastMaintenance) / (1000 * 60 * 60 * 24);
+                if (daysSinceMaintenance > 30 && !this.maintenanceRequired) {
+                    this.maintenanceRequired = true;
+                    this.logEvent(`Потрібне технічне обслуговування!`, 'warning');
+                }
+            }
+            
+            
+            get id() { return this.#id; }
+            get vin() { return this.#vin; }
+            get mileage() { return Math.round(this.#mileage); }
+            get fuelPercentage() { return (this.currentFuel / this.fuelCapacity) * 100; }
+            get loadPercentage() { return (this.currentLoad / this.maxLoad) * 100; }
+            get age() { return new Date().getFullYear() - this.year; }
+            
+            get info() {
+                return {
+                    brand: this.brand,
+                    model: this.model,
+                    licensePlate: this.licensePlate,
+                    year: this.year,
+                    maxLoad: this.maxLoad,
+                    currentLoad: this.currentLoad,
+                    fuelCapacity: this.fuelCapacity,
+                    currentFuel: this.currentFuel,
+                    mileage: this.mileage,
+                    isEngineOn: this.isEngineOn,
+                    isMoving: this.isMoving,
+                    currentSpeed: this.currentSpeed,
+                    location: this.location,
+                    destination: this.destination,
+                    maintenanceRequired: this.maintenanceRequired,
+                    age: this.age,
+                    type: this.constructor.name
+                };
+            }
+            
+            logEvent(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = {
+                    time: timestamp,
+                    lorry: `${this.brand} ${this.model}`,
+                    message: message,
+                    type: type
+                };
+                
+                addToConsole(logEntry);
+            }
+        }
+
+        class MAN extends Lorry {
+            constructor(model, maxLoad, fuelCapacity, year, licensePlate, trailerType = "Рефрижератор") {
+                super("MAN", model, maxLoad, fuelCapacity, year, licensePlate);
+                
+
+                this.trailerType = trailerType;
+                this.hasSleeperCab = true;
+                this.enginePower = 480; 
+                this.transmissionType = "Автоматична";
+                this.axleConfiguration = "6x4";
+                this.coolingSystem = true;
+                this.adBlueTank = 80; 
+                this.currentAdBlue = 80;
+                this.isRefrigerated = trailerType === "Рефрижератор";
+                this.temperature = 4; 
+            }
+            
+            
+            setRefrigeratorTemperature(temp) {
+                if (!this.isRefrigerated) {
+                    this.logEvent(`Ця вантажівка не має рефрижератора`, 'warning');
+                    return false;
+                }
+                
+                if (temp < -20 || temp > 20) {
+                    this.logEvent(`Температура повинна бути від -20°C до +20°C`, 'error');
+                    return false;
+                }
+                
+                const oldTemp = this.temperature;
+                this.temperature = temp;
+                this.logEvent(`Температуру рефрижератора змінено з ${oldTemp}°C на ${temp}°C`);
+                return true;
+            }
+            
+            refillAdBlue(amount) {
+                const newAmount = this.currentAdBlue + amount;
+                if (newAmount > this.adBlueTank) {
+                    this.currentAdBlue = this.adBlueTank;
+                    this.logEvent(`Бак AdBlue заправлено повністю: ${this.adBlueTank}л`);
+                } else {
+                    this.currentAdBlue = newAmount;
+                    this.logEvent(`Заправлено ${amount}л AdBlue. Поточний рівень: ${this.currentAdBlue}/${this.adBlueTank}л`);
+                }
+                return true;
+            }
+            
+            activateSleeperCab() {
+                if (!this.hasSleeperCab) {
+                    this.logEvent(`Ця вантажівка не має спального місця`, 'warning');
+                    return false;
+                }
+                
+                if (!this.isEngineOn) {
+                    this.logEvent(`Для активації спального місця потрібно завести двигун`, 'error');
+                    return false;
+                }
+                
+                this.logEvent(`Спальне місце активовано. Температура встановлена на 22°C`);
+                return true;
+            }
+            
+            simulateMovement() {
+                super.simulateMovement();
+                
+                if (this.isMoving) {
+                    const adBlueConsumption = this.currentSpeed * 0.0005;
+                    this.currentAdBlue -= adBlueConsumption;
+                    
+                    if (this.currentAdBlue <= 0) {
+                        this.currentAdBlue = 0;
+                        this.logEvent(`Закінчився AdBlue! Можуть бути проблеми з двигуном`, 'warning');
+                    }
+                    
+                    if (this.isRefrigerated && this.isEngineOn) {
+                        const tempChange = (Math.random() - 0.5) * 0.5;
+                        this.temperature += tempChange;
+                        this.temperature = Math.max(-20, Math.min(20, this.temperature));
+                    }
+                }
+            }
+            
+            get info() {
+                const baseInfo = super.info;
+                return {
+                    ...baseInfo,
+                    trailerType: this.trailerType,
+                    enginePower: this.enginePower,
+                    transmissionType: this.transmissionType,
+                    axleConfiguration: this.axleConfiguration,
+                    hasSleeperCab: this.hasSleeperCab,
+                    coolingSystem: this.coolingSystem,
+                    isRefrigerated: this.isRefrigerated,
+                    temperature: this.isRefrigerated ? this.temperature : null,
+                    adBlueTank: this.adBlueTank,
+                    currentAdBlue: this.currentAdBlue,
+                    adBluePercentage: (this.currentAdBlue / this.adBlueTank) * 100
+                };
+            }
+            
+            getSpecialFeatures() {
+                return {
+                    "Тип причепа": this.trailerType,
+                    "Потужність двигуна": `${this.enginePower} к.с.`,
+                    "Коробка передач": this.transmissionType,
+                    "Конфігурація осей": this.axleConfiguration,
+                    "Спальне місце": this.hasSleeperCab ? "Так" : "Ні",
+                    "Система охолодження": this.coolingSystem ? "Так" : "Ні",
+                    "Рефрижератор": this.isRefrigerated ? "Так" : "Ні",
+                    "AdBlue": `${this.currentAdBlue.toFixed(1)}/${this.adBlueTank}л`
+                };
+            }
+        }
+
+        class Sprinter extends Lorry {
+            constructor(model, maxLoad, fuelCapacity, year, licensePlate, bodyType = "Фургон") {
+                super("Mercedes-Benz", model, fuelCapacity, maxLoad, year, licensePlate);
+                
+                this.brand = "Mercedes-Benz";
+                this.model = model;
+                this.maxLoad = maxLoad;
+                this.fuelCapacity = fuelCapacity;
+                
+                this.bodyType = bodyType;
+                this.isDiesel = true;
+                this.hasAirConditioning = true;
+                this.sideDoor = true;
+                this.rearDoor = true;
+                this.loadingHeight = 0.6; 
+                this.loadingLength = 3.5; 
+                this.cargoVolume = 10; 
+                this.currentVolume = 0;
+                this.isRefrigeratedVan = bodyType === "Рефрижераторний фургон";
+                this.cargoTemperature = 18;
+                this.securitySystem = true;
+                this.isAlarmArmed = false;
+            }
+            
+            
+            loadCargoWithVolume(weight, volume) {
+                if (this.isMoving) {
+                    this.logEvent(`Неможливо завантажити вантаж під час руху!`, 'error');
+                    return false;
+                }
+                
+                if (this.currentLoad + weight > this.maxLoad) {
+                    this.logEvent(`Перевантаження по вазі! Максимум: ${this.maxLoad}т`, 'error');
+                    return false;
+                }
+                
+                if (this.currentVolume + volume > this.cargoVolume) {
+                    this.logEvent(`Перевантаження по об'єму! Максимум: ${this.cargoVolume}м³`, 'error');
+                    return false;
+                }
+                
+                this.currentLoad += weight;
+                this.currentVolume += volume;
+                this.logEvent(`Завантажено ${weight}т (${volume}м³). Вантаж: ${this.currentLoad}/${this.maxLoad}т, Об'єм: ${this.currentVolume.toFixed(1)}/${this.cargoVolume}м³`);
+                return true;
+            }
+            
+            unloadCargoWithVolume(weight, volume) {
+                if (this.isMoving) {
+                    this.logEvent(`Неможливо розвантажити вантаж під час руху!`, 'error');
+                    return false;
+                }
+                
+                if (this.currentLoad - weight < 0) {
+                    this.logEvent(`Недостатньо вантажу для розвантаження!`, 'error');
+                    return false;
+                }
+                
+                if (this.currentVolume - volume < 0) {
+                    this.logEvent(`Недостатньо об'єму для розвантаження!`, 'error');
+                    return false;
+                }
+                
+                this.currentLoad -= weight;
+                this.currentVolume -= volume;
+                this.logEvent(`Розвантажено ${weight}т (${volume}м³). Вантаж: ${this.currentLoad}/${this.maxLoad}т, Об'єм: ${this.currentVolume.toFixed(1)}/${this.cargoVolume}м³`);
+                return true;
+            }
+            
+            setCargoTemperature(temp) {
+                if (!this.isRefrigeratedVan) {
+                    this.logEvent(`Цей фургон не має рефрижератора`, 'warning');
+                    return false;
+                }
+                
+                if (temp < 0 || temp > 25) {
+                    this.logEvent(`Температура повинна бути від 0°C до +25°C`, 'error');
+                    return false;
+                }
+                
+                const oldTemp = this.cargoTemperature;
+                this.cargoTemperature = temp;
+                this.logEvent(`Температуру вантажного відсіку змінено з ${oldTemp}°C на ${temp}°C`);
+                return true;
+            }
+            
+            toggleAlarm() {
+                this.isAlarmArmed = !this.isAlarmArmed;
+                const status = this.isAlarmArmed ? "увімкнено" : "вимкнено";
+                this.logEvent(`Сигналізацію ${status}`);
+                return this.isAlarmArmed;
+            }
+            
+            openDoors(side = true, rear = true) {
+                if (this.isMoving) {
+                    this.logEvent(`Неможливо відкрити двері під час руху!`, 'error');
+                    return false;
+                }
+                
+                let message = "Відкрито";
+                if (side && this.sideDoor) message += " бічні двері";
+                if (rear && this.rearDoor) message += (side ? " та" : "") + " задні двері";
+                
+                this.logEvent(message);
+                return true;
+            }
+            
+            closeDoors() {
+                this.logEvent(`Всі двері закрито`);
+                return true;
+            }
+            
+            refuel(amount) {
+                const result = super.refuel(amount);
+                if (result && this.isDiesel) {
+                    this.logEvent(`Заправлено дизельним паливом`);
+                }
+                return result;
+            }
+            
+            simulateMovement() {
+                super.simulateMovement();
+                
+                if (this.isMoving) {
+                    if (this.isRefrigeratedVan && this.isEngineOn) {
+                        const tempChange = (Math.random() - 0.5) * 0.3;
+                        this.cargoTemperature += tempChange;
+                        this.cargoTemperature = Math.max(0, Math.min(25, this.cargoTemperature));
+                    }
+                    
+
+                    const efficiencyBonus = 0.2; 
+                    this.currentFuel += efficiencyBonus * 0.01;
+                    if (this.currentFuel > this.fuelCapacity) {
+                        this.currentFuel = this.fuelCapacity;
+                    }
+                }
+            }
+            
+            get info() {
+                const baseInfo = super.info;
+                return {
+                    ...baseInfo,
+                    bodyType: this.bodyType,
+                    isDiesel: this.isDiesel,
+                    hasAirConditioning: this.hasAirConditioning,
+                    sideDoor: this.sideDoor,
+                    rearDoor: this.rearDoor,
+                    loadingHeight: this.loadingHeight,
+                    loadingLength: this.loadingLength,
+                    cargoVolume: this.cargoVolume,
+                    currentVolume: this.currentVolume,
+                    isRefrigeratedVan: this.isRefrigeratedVan,
+                    cargoTemperature: this.isRefrigeratedVan ? this.cargoTemperature : null,
+                    securitySystem: this.securitySystem,
+                    isAlarmArmed: this.isAlarmArmed,
+                    volumePercentage: (this.currentVolume / this.cargoVolume) * 100
+                };
+            }
+            
+            getSpecialFeatures() {
+                return {
+                    "Тип кузова": this.bodyType,
+                    "Тип палива": this.isDiesel ? "Дизель" : "Бензин",
+                    "Кондиціонер": this.hasAirConditioning ? "Так" : "Ні",
+                    "Бічні двері": this.sideDoor ? "Так" : "Ні",
+                    "Задні двері": this.rearDoor ? "Так" : "Ні",
+                    "Висота завантаження": `${this.loadingHeight} м`,
+                    "Довжина кузова": `${this.loadingLength} м`,
+                    "Об'єм": `${this.cargoVolume} м³`,
+                    "Рефрижератор": this.isRefrigeratedVan ? "Так" : "Ні",
+                    "Сигналізація": this.securitySystem ? "Так" : "Ні"
+                };
+            }
+        }
+
+        let lorries = [];
+        let simulationInterval;
+        let currentFilter = 'all';
+
+        function updateBrandField() {
+            const type = document.getElementById('lorryType').value;
+            const brandField = document.getElementById('brand');
+            
+            if (type === 'man') {
+                brandField.value = 'MAN';
+            } else {
+                brandField.value = 'Mercedes-Benz';
+            }
+        }
+
+        function createNewLorry() {
+            const type = document.getElementById('lorryType').value;
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value || 'TGX';
+            const maxLoad = parseFloat(document.getElementById('maxLoad').value) || 25;
+            const fuelCapacity = parseFloat(document.getElementById('fuelCapacity').value) || 600;
+            const year = parseInt(document.getElementById('year').value) || 2022;
+            const licensePlate = document.getElementById('licensePlate').value || 'AA 1234 BB';
+            
+            let lorry;
+            
+            if (type === 'man') {
+                const trailerTypes = ["Рефрижератор", "Тент", "Цистерна", "Платформа"];
+                const randomTrailer = trailerTypes[Math.floor(Math.random() * trailerTypes.length)];
+                lorry = new MAN(model, maxLoad, fuelCapacity, year, licensePlate, randomTrailer);
+            } else {
+                const bodyTypes = ["Фургон", "Рефрижераторний фургон", "Мікроавтобус", "Шасі"];
+                const randomBody = bodyTypes[Math.floor(Math.random() * bodyTypes.length)];
+                lorry = new Sprinter(model, maxLoad, fuelCapacity, year, licensePlate, randomBody);
+            }
+            
+            lorries.push(lorry);
+            
+            renderLorries();
+            updateStatistics();
+            
+            document.getElementById('model').value = '';
+            document.getElementById('licensePlate').value = '';
+        }
+
+        function renderLorries() {
+            const container = document.getElementById('lorriesContainer');
+            container.innerHTML = '';
+            
+            const filteredLorries = lorries.filter(lorry => {
+                if (currentFilter === 'all') return true;
+                if (currentFilter === 'man') return lorry instanceof MAN;
+                if (currentFilter === 'sprinter') return lorry instanceof Sprinter;
+                return true;
+            });
+            
+            if (filteredLorries.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 20px;">
+                        <h3>Немає вантажівок для відображення</h3>
+                        <p style="color: #7f8c8d; margin-top: 10px;">Створіть нову вантажівку або змініть фільтр</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredLorries.forEach(lorry => {
+                const info = lorry.info;
+                const isMAN = lorry instanceof MAN;
+                const card = document.createElement('div');
+                card.className = `lorry-card ${isMAN ? 'man' : 'sprinter'}`;
+                
+                const specialFeatures = lorry.getSpecialFeatures ? lorry.getSpecialFeatures() : {};
+                let specialFeaturesHTML = '';
+                
+                for (const [key, value] of Object.entries(specialFeatures)) {
+                    specialFeaturesHTML += `
+                        <div class="feature-item">
+                            <span>${key}:</span>
+                            <span><strong>${value}</strong></span>
+                        </div>
+                    `;
+                }
+                
+                let specialControlsHTML = '';
+                if (isMAN) {
+                    specialControlsHTML = `
+                        <button class="btn btn-special" onclick="specialAction('${lorry.id}', 'setTemp')">
+                            🌡️ Температура
+                        </button>
+                        <button class="btn btn-warning" onclick="specialAction('${lorry.id}', 'refillAdBlue')">
+                            💧 AdBlue
+                        </button>
+                        <button class="btn btn-secondary" onclick="specialAction('${lorry.id}', 'sleeper')">
+                            🛏️ Спальне місце
+                        </button>
+                    `;
+                } else {
+                    specialControlsHTML = `
+                        <button class="btn btn-special" onclick="specialAction('${lorry.id}', 'loadVolume')">
+                            📦 Завантажити
+                        </button>
+                        <button class="btn btn-warning" onclick="specialAction('${lorry.id}', 'cargoTemp')">
+                            🌡️ Температура
+                        </button>
+                        <button class="btn btn-secondary" onclick="specialAction('${lorry.id}', 'alarm')">
+                            🔒 ${lorry.isAlarmArmed ? 'Вимкн.' : 'Увімкн.'}
+                        </button>
+                    `;
+                }
+                
+                card.innerHTML = `
+                    <div class="lorry-header">
+                        <div class="lorry-title">
+                            <span class="lorry-icon">${isMAN ? '🚛' : '🚐'}</span>
+                            ${lorry.brand} ${lorry.model}
+                        </div>
+                        <div class="lorry-badge">
+                            ${isMAN ? 'MAN' : 'Sprinter'}
+                        </div>
+                    </div>
+                    
+                    <div class="lorry-info">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Рік</div>
+                                <div class="info-value">${lorry.year} (${lorry.age} років)</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Пробіг</div>
+                                <div class="info-value">${lorry.mileage.toLocaleString()} км</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Статус</div>
+                                <div class="info-value">
+                                    <span class="status-indicator ${lorry.isMoving ? 'status-moving' : (lorry.isEngineOn ? 'status-active' : 'status-inactive')}"></span>
+                                    ${lorry.isMoving ? 'В дорозі' : (lorry.isEngineOn ? 'Заведено' : 'Заглушено')}
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Швидкість</div>
+                                <div class="info-value">${lorry.currentSpeed} км/год</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Місцезнаходження</div>
+                                <div class="info-value">${lorry.location}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Пункт призначення</div>
+                                <div class="info-value">${lorry.destination || '-'}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Спеціальні можливості -->
+                        ${specialFeaturesHTML ? `
+                            <div class="special-features">
+                                <div style="font-weight: bold; margin-bottom: 10px; color: #f39c12;">
+                                    ${isMAN ? '🚛 Спеціальні можливості MAN' : '🚐 Спеціальні можливості Sprinter'}
+                                </div>
+                                ${specialFeaturesHTML}
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Візуалізація вантажівки -->
+                        <div class="lorry-visual">
+                            <div class="lorry-body" style="left: ${lorry.isMoving ? '40%' : '20%'};"></div>
+                            <div class="lorry-cabin" style="left: ${lorry.isMoving ? 'calc(40% + 230px)' : 'calc(20% + 230px)'};"></div>
+                            <div class="lorry-wheels wheel-1" style="left: ${lorry.isMoving ? 'calc(40% + 30px)' : 'calc(20% + 30px)'};"></div>
+                            <div class="lorry-wheels wheel-2" style="left: ${lorry.isMoving ? 'calc(40% + 220px)' : 'calc(20% + 220px)'};"></div>
+                            <div class="lorry-wheels wheel-3" style="left: ${lorry.isMoving ? 'calc(40% + 270px)' : 'calc(20% + 270px)'};"></div>
+                            
+                            <div class="cargo-visual ${lorry.currentLoad === 0 ? 'empty-cargo' : ''}" 
+                                 style="left: ${lorry.isMoving ? '40%' : '20%'};">
+                                ${lorry.currentLoad > 0 ? `${lorry.currentLoad}т` : 'Порожньо'}
+                            </div>
+                        </div>
+                        
+                        <!-- Прогрес-бари -->
+                        <div style="margin: 15px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span>Паливо</span>
+                                <span>${lorry.currentFuel.toFixed(0)}/${lorry.fuelCapacity}л (${lorry.fuelPercentage.toFixed(1)}%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill fuel-bar" style="width: ${lorry.fuelPercentage}%"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin: 15px 0 5px;">
+                                <span>Вантаж</span>
+                                <span>${lorry.currentLoad}/${lorry.maxLoad}т (${lorry.loadPercentage.toFixed(1)}%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${lorry.loadPercentage}%"></div>
+                            </div>
+                        </div>
+                        
+                        ${lorry.maintenanceRequired ? `
+                            <div style="background: #fef9e7; color: #f39c12; padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #f39c12;">
+                                ⚠️ Потрібне технічне обслуговування!
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="btn btn-primary" onclick="lorryAction('${lorry.id}', 'engine')">
+                            ${lorry.isEngineOn ? '🔴 Заглушити' : '🟢 Завести'}
+                        </button>
+                        <button class="btn btn-secondary" onclick="lorryAction('${lorry.id}', 'move')">
+                            ${lorry.isMoving ? '🛑 Зупинити' : '🚚 Поїхати'}
+                        </button>
+                        <button class="btn btn-warning" onclick="lorryAction('${lorry.id}', 'load')">
+                            📦 Завантажити
+                        </button>
+                        <button class="btn btn-danger" onclick="lorryAction('${lorry.id}', 'unload')">
+                            📦 Розвантажити
+                        </button>
+                        
+                        ${specialControlsHTML}
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function lorryAction(lorryId, action) {
+            const lorry = lorries.find(l => l.id == lorryId);
+            if (!lorry) return;
+            
+            switch(action) {
+                case 'engine':
+                    if (lorry.isEngineOn) {
+                        lorry.stopEngine();
+                    } else {
+                        lorry.startEngine();
+                    }
+                    break;
+                    
+                case 'move':
+                    if (lorry.isMoving) {
+                        lorry.stopMoving();
+                    } else {
+                        const destinations = ['Київ', 'Львів', 'Одеса', 'Харків', 'Дніпро', 'Запоріжжя'];
+                        const randomDest = destinations[Math.floor(Math.random() * destinations.length)];
+                        const randomSpeed = lorry instanceof MAN ? 70 + Math.floor(Math.random() * 30) : 80 + Math.floor(Math.random() * 40);
+                        lorry.startMoving(randomDest, randomSpeed);
+                    }
+                    break;
+                    
+                case 'load':
+                    const loadAmount = Math.min(lorry.maxLoad * 0.2, lorry.maxLoad - lorry.currentLoad);
+                    if (loadAmount > 0) {
+                        lorry.loadCargo(loadAmount);
+                    } else {
+                        lorry.logEvent('Немає місця для додаткового вантажу', 'warning');
+                    }
+                    break;
+                    
+                case 'unload':
+                    if (lorry.currentLoad > 0) {
+                        const unloadAmount = Math.min(lorry.currentLoad * 0.3, lorry.currentLoad);
+                        lorry.unloadCargo(unloadAmount);
+                    } else {
+                        lorry.logEvent('Немає вантажу для розвантаження', 'warning');
+                    }
+                    break;
+                    
+                case 'refuel':
+                    const fuelAmount = Math.min(100, lorry.fuelCapacity - lorry.currentFuel);
+                    lorry.refuel(fuelAmount);
+                    break;
+                    
+                case 'maintenance':
+                    lorry.performMaintenance();
+                    break;
+            }
+            
+            renderLorries();
+            updateStatistics();
+        }
+
+        function specialAction(lorryId, action) {
+            const lorry = lorries.find(l => l.id == lorryId);
+            if (!lorry) return;
+            
+            if (lorry instanceof MAN) {
+                switch(action) {
+                    case 'setTemp':
+                        const temp = prompt('Введіть температуру рефрижератора (-20 до 20°C):', lorry.temperature);
+                        if (temp !== null) {
+                            lorry.setRefrigeratorTemperature(parseFloat(temp));
+                        }
+                        break;
+                        
+                    case 'refillAdBlue':
+                        const adBlueAmount = Math.min(20, lorry.adBlueTank - lorry.currentAdBlue);
+                        lorry.refillAdBlue(adBlueAmount);
+                        break;
+                        
+                    case 'sleeper':
+                        lorry.activateSleeperCab();
+                        break;
+                }
+            } else if (lorry instanceof Sprinter) {
+                switch(action) {
+                    case 'loadVolume':
+                        const weight = Math.min(2, lorry.maxLoad - lorry.currentLoad);
+                        const volume = Math.min(3, lorry.cargoVolume - lorry.currentVolume);
+                        if (weight > 0 && volume > 0) {
+                            lorry.loadCargoWithVolume(weight, volume);
+                        } else {
+                            lorry.logEvent('Немає місця для додаткового вантажу', 'warning');
+                        }
+                        break;
+                        
+                    case 'cargoTemp':
+                        const temp = prompt('Введіть температуру вантажного відсіку (0 до 25°C):', lorry.cargoTemperature);
+                        if (temp !== null) {
+                            lorry.setCargoTemperature(parseFloat(temp));
+                        }
+                        break;
+                        
+                    case 'alarm':
+                        lorry.toggleAlarm();
+                        break;
+                        
+                    case 'doors':
+                        lorry.openDoors(true, true);
+                        break;
+                }
+            }
+            
+            renderLorries();
+            updateStatistics();
+        }
+
+        function showType(type) {
+            currentFilter = type;
+            
+            document.querySelectorAll('.type-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelector(`.type-tab[onclick="showType('${type}')"]`).classList.add('active');
+            
+            renderLorries();
+        }
+
+        function updateStatistics() {
+            const totalLorries = lorries.length;
+            const manCount = lorries.filter(l => l instanceof MAN).length;
+            const sprinterCount = lorries.filter(l => l instanceof Sprinter).length;
+            const totalCargo = lorries.reduce((sum, lorry) => sum + lorry.currentLoad, 0);
+            
+            document.getElementById('totalLorries').textContent = totalLorries;
+            document.getElementById('manCount').textContent = manCount;
+            document.getElementById('sprinterCount').textContent = sprinterCount;
+            document.getElementById('totalCargo').textContent = totalCargo.toFixed(1);
+        }
+
+        function addToConsole(logEntry) {
+            const consoleDiv = document.getElementById('console');
+            const logDiv = document.createElement('div');
+            logDiv.className = 'log-entry';
+            
+            let colorClass = 'log-info';
+            if (logEntry.type === 'success') colorClass = 'log-success';
+            else if (logEntry.type === 'warning') colorClass = 'log-warning';
+            else if (logEntry.type === 'error') colorClass = 'log-error';
+            
+            logDiv.innerHTML = `
+                <span class="log-time">[${logEntry.time}]</span>
+                <span class="${colorClass}">
+                    <strong>${logEntry.lorry}:</strong> ${logEntry.message}
+                </span>
+            `;
+            
+            consoleDiv.prepend(logDiv);
+            
+            if (consoleDiv.children.length > 20) {
+                consoleDiv.removeChild(consoleDiv.lastChild);
+            }
+        }
+
+        function simulateMovement() {
+            lorries.forEach(lorry => {
+                lorry.simulateMovement();
+            });
+            renderLorries();
+            updateStatistics();
+        }
+
+        window.onload = function() {
+            updateBrandField();
+            
+            setTimeout(() => {
+                for (let i = 0; i < 2; i++) {
+                    setTimeout(() => {
+                        document.getElementById('lorryType').value = 'man';
+                        updateBrandField();
+                        document.getElementById('model').value = ['TGX', 'TGS'][i];
+                        document.getElementById('maxLoad').value = [25, 30][i];
+                        document.getElementById('fuelCapacity').value = [600, 700][i];
+                        document.getElementById('year').value = [2020, 2022][i];
+                        document.getElementById('licensePlate').value = [`MAN${i+1} 1234`, `MAN${i+2} 5678`][i];
+                        createNewLorry();
+                    }, i * 500);
+                }
+                
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        document.getElementById('lorryType').value = 'sprinter';
+                        updateBrandField();
+                        document.getElementById('model').value = ['Sprinter 314', 'Sprinter 416', 'Sprinter 519'][i];
+                        document.getElementById('maxLoad').value = [3, 4, 5][i];
+                        document.getElementById('fuelCapacity').value = [75, 90, 100][i];
+                        document.getElementById('year').value = [2021, 2022, 2023][i];
+                        document.getElementById('licensePlate').value = [`SPR${i+1} ABCD`, `SPR${i+2} EFGH`, `SPR${i+3} IJKL`][i];
+                        createNewLorry();
+                    }, (i + 2) * 500);
+                }
+                
+                setTimeout(() => {
+                    simulationInterval = setInterval(simulateMovement, 3000);
+                }, 4000);
+            }, 500);
+        };
+    </script>
+</body>
+</html>
