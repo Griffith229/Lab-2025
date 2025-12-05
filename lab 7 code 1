@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обробка масиву</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .array-display {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 18px;
+        }
+        .result {
+            background-color: #e9f7fe;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 3px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-reset {
+            background-color: #f44336;
+        }
+        .btn-reset:hover {
+            background-color: #d32f2f;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .task {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Обробка одновимірного масиву</h1>
+        
+        <div class="task">
+            <h3>Завдання:</h3>
+            <ol>
+                <li>Вивести на екран індекс та значення елемента з найбільшим балом</li>
+                <li>Обчислити середнє арифметичне першої половини масиву</li>
+                <li>Обчислити різницю між першими та останніми елементами масиву</li>
+            </ol>
+        </div>
+        
+        <div class="array-display" id="arrayDisplay">
+            Масив буде згенеровано після натискання кнопки
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="processArray()">Обробити масив</button>
+            <button class="btn btn-reset" onclick="resetArray()">Згенерувати новий масив</button>
+        </div>
+        
+        <div class="result" id="result1">
+            Результат 1: Очікуємо обробки...
+        </div>
+        
+        <div class="result" id="result2">
+            Результат 2: Очікуємо обробки...
+        </div>
+        
+        <div class="result" id="result3">
+            Результат 3: Очікуємо обробки...
+        </div>
+    </div>
+
+    <script>
+        let scores = [];
+        
+        function generateRandomArray() {
+            scores = [];
+            const length = Math.floor(Math.random() * 10) + 10; 
+            for (let i = 0; i < length; i++) {
+                scores.push(Math.floor(Math.random() * 100) + 1); 
+            }
+            return scores;
+        }
+        
+        window.onload = function() {
+            scores = generateRandomArray();
+            displayArray();
+        };
+        
+        function displayArray() {
+            const arrayDisplay = document.getElementById('arrayDisplay');
+            arrayDisplay.innerHTML = `<strong>Поточний масив балів:</strong><br>`;
+            
+            scores.forEach((score, index) => {
+                arrayDisplay.innerHTML += `[${index}] = ${score}  `;
+                if ((index + 1) % 5 === 0) arrayDisplay.innerHTML += '<br>';
+            });
+            
+            arrayDisplay.innerHTML += `<br><strong>Кількість елементів:</strong> ${scores.length}`;
+        }
+        
+        function processArray() {
+            if (scores.length === 0) {
+                scores = generateRandomArray();
+                displayArray();
+            }
+            
+            let maxScore = scores[0];
+            let maxIndex = 0;
+            
+            for (let i = 1; i < scores.length; i++) {
+                if (scores[i] > maxScore) {
+                    maxScore = scores[i];
+                    maxIndex = i;
+                }
+            }
+            
+            document.getElementById('result1').innerHTML = `
+                <strong>1. Елемент з найбільшим балом:</strong><br>
+                Індекс: <span class="highlight">${maxIndex}</span><br>
+                Значення: <span class="highlight">${maxScore}</span>
+            `;
+            
+            const halfLength = Math.floor(scores.length / 2);
+            let sumFirstHalf = 0;
+            
+            for (let i = 0; i < halfLength; i++) {
+                sumFirstHalf += scores[i];
+            }
+            
+            const averageFirstHalf = (sumFirstHalf / halfLength).toFixed(2);
+            
+            document.getElementById('result2').innerHTML = `
+                <strong>2. Середнє арифметичне першої половини масиву:</strong><br>
+                Кількість елементів у першій половині: <span class="highlight">${halfLength}</span><br>
+                Сума елементів: <span class="highlight">${sumFirstHalf}</span><br>
+                Середнє арифметичне: <span class="highlight">${averageFirstHalf}</span>
+            `;
+            
+            const firstElements = scores.slice(0, 3); 
+            const lastElements = scores.slice(-3);  
+            
+            let sumFirst = 0;
+            let sumLast = 0;
+            
+            firstElements.forEach(score => sumFirst += score);
+            lastElements.forEach(score => sumLast += score);
+            
+            const difference = sumFirst - sumLast;
+            
+            document.getElementById('result3').innerHTML = `
+                <strong>3. Різниця між першими та останніми елементами:</strong><br>
+                Перші 3 елементи: <span class="highlight">[${firstElements.join(', ')}]</span> (сума = ${sumFirst})<br>
+                Останні 3 елементи: <span class="highlight">[${lastElements.join(', ')}]</span> (сума = ${sumLast})<br>
+                Різниця (перші - останні): <span class="highlight">${difference}</span>
+            `;
+        }
+        
+        function resetArray() {
+            scores = generateRandomArray();
+            displayArray();
+            
+            document.getElementById('result1').innerHTML = 'Результат 1: Очікуємо обробки...';
+            document.getElementById('result2').innerHTML = 'Результат 2: Очікуємо обробки...';
+            document.getElementById('result3').innerHTML = 'Результат 3: Очікуємо обробки...';
+        }
+        
+        generateRandomArray();
+        displayArray();
+    </script>
+</body>
+</html>
