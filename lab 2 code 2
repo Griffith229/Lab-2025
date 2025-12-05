@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обчислення значення функції</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: #d00;
+            font-weight: bold;
+        }
+        .success {
+            color: #090;
+        }
+    </style>
+</head>
+<body>
+    <h2>Обчислення значення функції f(x)</h2>
+    <p>Функція: f(x) = √(2x + 1) / (x - 3)</p>
+    <div id="output"></div>
+
+    <script>
+        function calculateFunction() {
+            const input = prompt('Введіть значення x:');
+            
+            if (input === null) {
+                displayResult('Операцію скасовано.', 'error');
+                return;
+            }
+            
+            const x = parseFloat(input);
+            
+            if (isNaN(x)) {
+                displayResult('Помилка: введено некоректне число!', 'error');
+                return;
+            }
+            
+            let result;
+            let message;
+            let className = 'success';
+            
+            if (2*x + 1 < 0) {
+                message = `Помилка: вираз під коренем (2x + 1) від'ємний при x = ${x}`;
+                className = 'error';
+            } else if (x === 3) {
+                message = `Помилка: ділення на нуль (x - 3 = 0 при x = ${x})`;
+                className = 'error';
+            } else {
+                const numerator = Math.sqrt(2*x + 1);
+                const denominator = x - 3;
+                result = numerator / denominator;
+                
+                message = `f(${x}) = √(2·${x} + 1) / (${x} - 3) = ${result.toFixed(4)}`;
+            }
+            
+            displayResult(message, className);
+        }
+        
+        function displayResult(message, className) {
+            const output = document.getElementById('output');
+            output.innerHTML = `
+                <div class="result ${className}">
+                    <strong>Результат:</strong><br>
+                    ${message}
+                </div>
+            `;
+        }
+    
+        calculateFunction();
+    </script>
+</body>
+</html>
