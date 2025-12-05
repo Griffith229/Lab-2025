@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перевірка положення прямокутника</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .true {
+            color: #090;
+            font-weight: bold;
+        }
+        .false {
+            color: #d00;
+            font-weight: bold;
+        }
+        .coordinates {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Перевірка положення прямокутника</h2>
+    <p>Введіть координати двох протилежних вершин прямокутника:</p>
+    
+    <div class="input-group">
+        <label for="x1">Вершина A: x1</label>
+        <input type="number" id="x1" step="any" placeholder="Наприклад: -3">
+    </div>
+    
+    <div class="input-group">
+        <label for="y1">Вершина A: y1</label>
+        <input type="number" id="y1" step="any" placeholder="Наприклад: 2">
+    </div>
+    
+    <div class="input-group">
+        <label for="x2">Вершина C: x2</label>
+        <input type="number" id="x2" step="any" placeholder="Наприклад: 3">
+    </div>
+    
+    <div-group class="input-group">
+        <label for="y2">Вершина C: y2</label>
+        <input type="number" id="y2" step="any" placeholder="Наприклад: -2">
+    </div-group>
+    
+    <button onclick="checkRectangle()">Перевірити</button>
+    
+    <div id="result" class="result"></div>
+
+    <script>
+        function checkRectangle() {
+            const x1 = parseFloat(document.getElementById('x1').value);
+            const y1 = parseFloat(document.getElementById('y1').value);
+            const x2 = parseFloat(document.getElementById('x2').value);
+            const y2 = parseFloat(document.getElementById('y2').value);
+            
+            if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="false">Будь ласка, заповніть всі поля коректними числами!</div>';
+                return;
+            }
+            
+            const x3 = x1;
+            const y3 = y2;
+            const x4 = x2;
+            const y4 = y1;
+            
+            const centerX = (x1 + x2) / 2;
+            const centerY = (y1 + y2) / 2;
+            
+            const isCenterAtOrigin = Math.abs(centerX) < 0.0001 && Math.abs(centerY) < 0.0001;
+            
+            const isAOnXAxis = Math.abs(y1) < 0.0001;
+            const isAOnYAxis = Math.abs(x1) < 0.0001;
+            
+            const isBOnXAxis = Math.abs(y4) < 0.0001;
+            const isBOnYAxis = Math.abs(x4) < 0.0001;
+            
+            const isCOnXAxis = Math.abs(y2) < 0.0001;
+            const isCOnYAxis = Math.abs(x2) < 0.0001;
+            
+            const isDOnXAxis = Math.abs(y3) < 0.0001;
+            const isDOnYAxis = Math.abs(x3) < 0.0001;
+            
+            let resultHTML = '<h3>Результати перевірки:</h3>';
+            
+            resultHTML += `<div class="coordinates">
+                <strong>Координати вершин:</strong><br>
+                A(${x1.toFixed(2)}, ${y1.toFixed(2)})<br>
+                B(${x4.toFixed(2)}, ${y4.toFixed(2)})<br>
+                C(${x2.toFixed(2)}, ${y2.toFixed(2)})<br>
+                D(${x3.toFixed(2)}, ${y3.toFixed(2)})
+            </div>`;
+            
+            resultHTML += `<div class="coordinates">
+                <strong>Центр прямокутника:</strong><br>
+                O(${centerX.toFixed(2)}, ${centerY.toFixed(2)})
+            </div>`;
+            
+            resultHTML += '<p><strong>1. Центр перетину діагоналей збігається з початком координат (0, 0):</strong> ';
+            resultHTML += isCenterAtOrigin 
+                ? '<span class="true">ТАК</span>' 
+                : '<span class="false">НІ</span>';
+            resultHTML += '</p>';
+            
+            resultHTML += '<p><strong>2. Вершини на осях координат:</strong></p>';
+            resultHTML += '<ul>';
+            resultHTML += `<li>Вершина A: на осі X? ${isAOnXAxis ? '<span class="true">ТАК</span>' : '<span class="false">НІ</span>'} | на осі Y? ${isAOnYAxis ? '<span class="true">ТАК</span>' : '<span class="false">НІ</span>'}</li>`;
+            resultHTML += `<li>Вершина B: на осі X? ${isBOnXAxis ? '<span class="true">ТАК</span>' : '<span class="false">НІ</span>'} | на осі Y? ${isBOnYAxis ? '<span class="true">ТАК</span>' : '<span class="false">НІ</span>'}</li>`;
+            resultHTML += `<li>Вершина C: на осі X? ${isCOnXAxis ? '<span class="true">ТАК</span>' : '<span class="false">НІ</span>'} | на осі Y? ${isCOnYAxis ? '<span class="true">ТАК</span>' : '<span class="false">НІ</span>'}</li>`;
+            resultHTML += `<li>Вершина D: на осі X? ${isDOnXAxis ? '<span class="true">ТАК</span>' : '<span class="false">НІ</span>'} | на осі Y? ${isDOnYAxis ? '<span class="true">ТАК</span>' : '<span class="false">НІ</span>'}</li>`;
+            resultHTML += '</ul>';
+            
+            resultHTML += '<p><strong>Висновок:</strong> ';
+            if (isCenterAtOrigin) {
+                resultHTML += 'Центр прямокутника збігається з початком координат. ';
+            } else {
+                resultHTML += 'Центр прямокутника НЕ збігається з початком координат. ';
+            }
+            
+            const verticesOnAxes = [isAOnXAxis || isAOnYAxis, isBOnXAxis || isBOnYAxis, 
+                                  isCOnXAxis || isCOnYAxis, isDOnXAxis || isDOnYAxis];
+            const countOnAxes = verticesOnAxes.filter(v => v).length;
+            resultHTML += `Кількість вершин на осях координат: ${countOnAxes} з 4.</p>`;
+            
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+        
+        window.onload = function() {
+            document.getElementById('x1').value = -3;
+            document.getElementById('y1').value = 2;
+            document.getElementById('x2').value = 3;
+            document.getElementById('y2').value = -2;
+        };
+    </script>
+</body>
+</html>
