@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обробка масиву об'єктів - Motor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .task {
+            background-color: #e8f4fc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        .motor-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #27ae60;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 180px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-search {
+            background-color: #9b59b6;
+        }
+        .btn-search:hover {
+            background-color: #8e44ad;
+        }
+        .btn-filter {
+            background-color: #e74c3c;
+        }
+        .btn-filter:hover {
+            background-color: #c0392b;
+        }
+        .btn-reset {
+            background-color: #34495e;
+        }
+        .btn-reset:hover {
+            background-color: #2c3e50;
+        }
+        .result-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+        .search-box {
+            background-color: #fcf8e3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .search-input {
+            padding: 10px;
+            border: 2px solid #9b59b6;
+            border-radius: 6px;
+            width: 300px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .search-btn {
+            padding: 10px 20px;
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #856404;
+        }
+        .motor-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .motor-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .motor-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .motor-brand {
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .motor-details {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .producer-section {
+            background-color: #d4edda;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        h2, h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .status-new {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-used {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-refurbished {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Обробка масиву об'єктів класу "Motor"</h1>
+        
+        <div class="task">
+            <h2>Завдання:</h2>
+            <ol>
+                <li>Створити масив з 9 елементів класу Motor</li>
+                <li>Реалізувати пошук у масиві за маркою мотора (введення користувача)</li>
+                <li>Вивести на екран усі мотори одного виробника (фільтрація за виробником)</li>
+            </ol>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="createMotorsArray()">Створити масив моторів</button>
+            <button class="btn btn-search" onclick="showSearchBox()">Пошук за маркою</button>
+            <button class="btn btn-filter" onclick="filterByProducer()">Фільтр за виробником</button>
+            <button class="btn btn-reset" onclick="resetAll()">Скинути все</button>
+        </div>
+        
+        <div id="searchBox" class="search-box" style="display: none;">
+            <h3>Пошук мотора за маркою:</h3>
+            <input type="text" id="brandSearch" class="search-input" placeholder="Введіть марку мотора...">
+            <button class="search-btn" onclick="searchByBrand()">Пошук</button>
+            <button class="search-btn" onclick="hideSearchBox()" style="background-color: #6c757d;">Скасувати</button>
+        </div>
+        
+        <div id="motorsList" class="result-section">
+            <h2>Список моторів</h2>
+            <div id="motorsContainer">
+                Масив моторів ще не створено. Натисніть "Створити масив моторів"
+            </div>
+        </div>
+        
+        <div id="searchResult" class="result-section" style="display: none;">
+            <h2>Результати пошуку</h2>
+            <div id="searchResultContainer"></div>
+        </div>
+        
+        <div id="filterResult" class="producer-section" style="display: none;">
+            <h2>Мотори виробника: <span id="producerName"></span></h2>
+            <div id="filterResultContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        class Motor {
+            constructor(brand, model, power, year, price, producer, type, status, serialNumber) {
+                this._serialNumber = serialNumber;
+                this._manufactureDate = new Date();
+                
+                this.brand = brand;
+                this.model = model;
+                this.power = power; 
+                this.year = year;
+                this.price = price; 
+                this.producer = producer;
+                this.type = type; 
+                this.status = status; 
+            }
+            
+            getInfo() {
+                return `${this.brand} ${this.model}, ${this.power} кВт, ${this.year} рік, ${this.price} грн`;
+            }
+            
+            getFullInfo() {
+                return `${this.brand} ${this.model}
+                Виробник: ${this.producer}
+                Потужність: ${this.power} кВт
+                Рік випуску: ${this.year}
+                Тип: ${this.type}
+                Стан: ${this.status}
+                Ціна: ${this.price} грн
+                Серійний номер: ${this._serialNumber}`;
+            }
+            
+            getAge() {
+                const currentYear = new Date().getFullYear();
+                return currentYear - this.year;
+            }
+            
+            _generateSerialNumber() {
+                return this._serialNumber;
+            }
+        }
+        
+        let motorsArray = [];
+        const producers = ['Toyota', 'Honda', 'BMW', 'Mercedes', 'Ford', 'Volkswagen', 'Audi', 'Tesla', 'Hyundai'];
+        const brands = ['V8 Turbo', 'EcoBoost', 'i-Force', 'SkyActiv', 'EcoTec', 'TFSI', 'BlueTEC', 'Electric Drive', 'VTEC'];
+        const models = ['X1', 'A200', 'Eco', 'Sport', 'Pro', 'Max', 'Premium', 'Elite', 'Standard'];
+        const types = ['бензиновий', 'дизельний', 'електричний', 'гібридний'];
+        const statuses = ['новий', 'вживаний', 'відновлений'];
+        
+        function createMotorsArray() {
+            motorsArray = [];
+            
+            for (let i = 0; i < 9; i++) {
+                const brand = brands[Math.floor(Math.random() * brands.length)];
+                const model = models[Math.floor(Math.random() * models.length)];
+                const power = Math.floor(Math.random() * 300) + 50;
+                const year = Math.floor(Math.random() * 10) + 2015; 
+                const price = Math.floor(Math.random() * 200000) + 50000; 
+                const producer = producers[Math.floor(Math.random() * producers.length)];
+                const type = types[Math.floor(Math.random() * types.length)];
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                const serialNumber = `SN${1000 + i}-${Math.floor(Math.random() * 10000)}`;
+                
+                const motor = new Motor(brand, model, power, year, price, producer, type, status, serialNumber);
+                motorsArray.push(motor);
+            }
+            
+            displayMotors(motorsArray, 'motorsContainer');
+            
+            document.getElementById('searchResult').style.display = 'none';
+            document.getElementById('filterResult').style.display = 'none';
+            
+            alert(`Створено масив з ${motorsArray.length} моторів!`);
+        }
+        
+        function displayMotors(motors, containerId) {
+            const container = document.getElementById(containerId);
+            
+            if (motors.length === 0) {
+                container.innerHTML = '<p>Моторів не знайдено</p>';
+                return;
+            }
+            
+            let html = '<div class="motor-list">';
+            
+            motors.forEach((motor, index) => {
+                let statusClass = '';
+                switch(motor.status) {
+                    case 'новий': statusClass = 'status-new'; break;
+                    case 'вживаний': statusClass = 'status-used'; break;
+                    case 'відновлений': statusClass = 'status-refurbished'; break;
+                }
+                
+                html += `
+                    <div class="motor-item">
+                        <div class="motor-brand">${motor.brand} ${motor.model}</div>
+                        <div class="motor-details">
+                            <strong>Виробник:</strong> ${motor.producer}<br>
+                            <strong>Потужність:</strong> ${motor.power} кВт<br>
+                            <strong>Рік:</strong> ${motor.year}<br>
+                            <strong>Тип:</strong> ${motor.type}<br>
+                            <strong>Ціна:</strong> ${motor.price} грн<br>
+                            <strong>Вік:</strong> ${motor.getAge()} років<br>
+                            <span class="status ${statusClass}">${motor.status}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        function showSearchBox() {
+            if (motorsArray.length === 0) {
+                alert('Спочатку створіть масив моторів!');
+                return;
+            }
+            
+            document.getElementById('searchBox').style.display = 'block';
+            document.getElementById('brandSearch').focus();
+        }
+        
+        function hideSearchBox() {
+            document.getElementById('searchBox').style.display = 'none';
+            document.getElementById('brandSearch').value = '';
+        }
+        
+        function searchByBrand() {
+            const searchTerm = document.getElementById('brandSearch').value.trim();
+            
+            if (!searchTerm) {
+                alert('Будь ласка, введіть марку для пошуку');
+                return;
+            }
+            
+            const foundMotors = motorsArray.filter(motor => 
+                motor.brand.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            if (foundMotors.length === 0) {
+                document.getElementById('searchResultContainer').innerHTML = 
+                    `<p>Не знайдено моторів з маркою "<span class="highlight">${searchTerm}</span>"</p>`;
+            } else {
+                displayMotors(foundMotors, 'searchResultContainer');
+            }
+            
+            document.getElementById('searchResult').style.display = 'block';
+            document.getElementById('filterResult').style.display = 'none';
+            
+            document.getElementById('searchResult').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function filterByProducer() {
+            if (motorsArray.length === 0) {
+                alert('Спочатку створіть масив моторів!');
+                return;
+            }
+            
+            const producerCount = {};
+            motorsArray.forEach(motor => {
+                producerCount[motor.producer] = (producerCount[motor.producer] || 0) + 1;
+            });
+            
+            let mostCommonProducer = '';
+            let maxCount = 0;
+            
+            for (const [producer, count] of Object.entries(producerCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    mostCommonProducer = producer;
+                }
+            }
+            
+            if (mostCommonProducer === '') {
+                mostCommonProducer = motorsArray[0].producer;
+            }
+            
+            const filteredMotors = motorsArray.filter(motor => 
+                motor.producer === mostCommonProducer
+            );
+            
+            document.getElementById('producerName').textContent = mostCommonProducer;
+            displayMotors(filteredMotors, 'filterResultContainer');
+            
+            document.getElementById('filterResult').style.display = 'block';
+            document.getElementById('searchResult').style.display = 'none';
+            
+            document.getElementById('filterResult').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetAll() {
+            motorsArray = [];
+            document.getElementById('motorsContainer').innerHTML = 
+                'Масив моторів ще не створено. Натисніть "Створити масив моторів"';
+            document.getElementById('searchResult').style.display = 'none';
+            document.getElementById('filterResult').style.display = 'none';
+            document.getElementById('searchBox').style.display = 'none';
+            document.getElementById('brandSearch').value = '';
+            
+            alert('Всі дані скинуто!');
+        }
+        
+        document.getElementById('brandSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchByBrand();
+            }
+        });
+        
+        window.onload = function() {
+            createMotorsArray();
+        };
+    </script>
+</body>
+</html>
