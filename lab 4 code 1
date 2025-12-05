@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обчислення параметрів трикутника</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 25px;
+            background-color: #f5f7fa;
+            line-height: 1.7;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 25px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .calculate-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .calculate-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .param {
+            margin: 12px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+        .param strong {
+            color: #2980b9;
+            display: inline-block;
+            min-width: 160px;
+        }
+        .triangle-type {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px;
+            text-align: center;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .equilateral {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 2px solid #2ecc71;
+        }
+        .isosceles {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+        .scalene {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #17a2b8;
+        }
+        .error {
+            color: #e74c3c;
+            background-color: #fde8e8;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #f5c6cb;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📐 Обчислення параметрів трикутника</h1>
+        
+        <div class="input-group">
+            <label for="sideA">Сторона A (см):</label>
+            <input type="number" id="sideA" step="any" min="0.1" placeholder="Введіть довжину сторони A" value="5">
+        </div>
+        
+        <div class="input-group">
+            <label for="sideB">Сторона B (см):</label>
+            <input type="number" id="sideB" step="any" min="0.1" placeholder="Введіть довжину сторони B" value="6">
+        </div>
+        
+        <div class="input-group">
+            <label for="sideC">Сторона C (см):</label>
+            <input type="number" id="sideC" step="any" min="0.1" placeholder="Введіть довжину сторони C" value="7">
+        </div>
+        
+        <div class="button-group">
+            <button class="calculate-btn" onclick="calculateTriangle()">🔄 Обчислити параметри</button>
+            <button class="reset-btn" onclick="resetForm()">🗑️ Скинути</button>
+        </div>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function calculateTriangleParameters(a, b, c) {
+            if (a + b <= c || a + c <= b || b + c <= a) {
+                return {
+                    error: "Трикутника з такими сторонами не існує! (сума двох сторін повинна бути більшою за третю)"
+                };
+            }
+            
+            const perimeter = a + b + c;
+            
+            const s = perimeter / 2;
+            
+            const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+            
+            let type, typeClass;
+            if (Math.abs(a - b) < 0.0001 && Math.abs(b - c) < 0.0001) {
+                type = "Рівносторонній";
+                typeClass = "equilateral";
+            } else if (Math.abs(a - b) < 0.0001 || Math.abs(a - c) < 0.0001 || Math.abs(b - c) < 0.0001) {
+                type = "Рівнобедрений";
+                typeClass = "isosceles";
+            } else {
+                type = "Різносторонній";
+                typeClass = "scalene";
+            }
+            
+            const sides = [a, b, c].sort((x, y) => x - y);
+            const isRight = Math.abs(sides[2]*sides[2] - (sides[0]*sides[0] + sides[1]*sides[1])) < 0.0001;
+            
+            const heightA = (2 * area) / a;
+            const heightB = (2 * area) / b;
+            const heightC = (2 * area) / c;
+            
+            return {
+                exists: true,
+                sides: { a, b, c },
+                perimeter: perimeter,
+                area: area,
+                type: type,
+                typeClass: typeClass,
+                isRight: isRight,
+                heights: { heightA, heightB, heightC },
+                semiperimeter: s
+            };
+        }
+        
+        function displayResults(result) {
+            const resultDiv = document.getElementById('result');
+            
+            if (result.error) {
+                resultDiv.innerHTML = `
+                    <div class="error">${result.error}</div>
+                    <p><strong>Правило існування трикутника:</strong><br>
+                    Кожна сторона повинна бути меншою за суму двох інших сторін.</p>
+                `;
+                resultDiv.className = 'result show';
+                return;
+            }
+            
+            let resultHTML = `<h2>📊 Результати обчислень:</h2>`;
+            
+            let typeInfo = result.type;
+            if (result.isRight) {
+                typeInfo += " (та прямокутний)";
+            }
+            resultHTML += `
+                <div class="triangle-type ${result.typeClass}">
+                    Тип трикутника: ${typeInfo}
+                </div>
+            `;
+            
+            resultHTML += `
+                <div class="param"><strong>Сторона A:</strong> ${result.sides.a.toFixed(2)} см</div>
+                <div class="param"><strong>Сторона B:</strong> ${result.sides.b.toFixed(2)} см</div>
+                <div class="param"><strong>Сторона C:</strong> ${result.sides.c.toFixed(2)} см</div>
+                <div class="param"><strong>Периметр:</strong> ${result.perimeter.toFixed(2)} см</div>
+                <div class="param"><strong>Півпериметр:</strong> ${result.semiperimeter.toFixed(2)} см</div>
+                <div class="param"><strong>Площа:</strong> ${result.area.toFixed(2)} см²</div>
+            `;
+            
+            resultHTML += `
+                <div class="param"><strong>Висота до сторони A:</strong> ${result.heights.heightA.toFixed(2)} см</div>
+                <div class="param"><strong>Висота до сторони B:</strong> ${result.heights.heightB.toFixed(2)} см</div>
+                <div class="param"><strong>Висота до сторони C:</strong> ${result.heights.heightC.toFixed(2)} см</div>
+            `;
+            
+            resultHTML += `
+                <div class="formula">
+                    <strong>Формула Герона для площі:</strong><br>
+                    S = √[p(p-a)(p-b)(p-c)]<br>
+                    де p = (a+b+c)/2 = ${result.semiperimeter.toFixed(2)}<br>
+                    S = √[${result.semiperimeter.toFixed(2)} × 
+                    ${(result.semiperimeter - result.sides.a).toFixed(2)} × 
+                    ${(result.semiperimeter - result.sides.b).toFixed(2)} × 
+                    ${(result.semiperimeter - result.sides.c).toFixed(2)}] = 
+                    ${result.area.toFixed(2)} см²
+                </div>
+            `;
+            
+            resultDiv.innerHTML = resultHTML;
+            resultDiv.className = 'result show';
+        }
+        
+        function calculateTriangle() {
+            const a = parseFloat(document.getElementById('sideA').value);
+            const b = parseFloat(document.getElementById('sideB').value);
+            const c = parseFloat(document.getElementById('sideC').value);
+            
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                alert("Будь ласка, введіть коректні числові значення для всіх сторін!");
+                return;
+            }
+            
+            if (a <= 0 || b <= 0 || c <= 0) {
+                alert("Довжини сторін повинні бути додатніми числами!");
+                return;
+            }
+            
+            const result = calculateTriangleParameters(a, b, c);
+            
+            displayResults(result);
+        }
+        
+        function resetForm() {
+            document.getElementById('sideA').value = '';
+            document.getElementById('sideB').value = '';
+            document.getElementById('sideC').value = '';
+            document.getElementById('result').className = 'result';
+            document.getElementById('sideA').focus();
+        }
+        
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateTriangle();
+            }
+        });
+        
+        window.onload = function() {
+            if (!document.getElementById('sideA').value && 
+                !document.getElementById('sideB').value && 
+                !document.getElementById('sideC').value) {
+                document.getElementById('sideA').value = 5;
+                document.getElementById('sideB').value = 6;
+                document.getElementById('sideC').value = 7;
+                calculateTriangle();
+            }
+        };
+    </script>
+</body>
+</html>
