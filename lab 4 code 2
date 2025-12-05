@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рекурсивне обчислення добутку елементів масиву</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 25px;
+        }
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 2px dashed #dee2e6;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+        input:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0,0,0,0.1);
+        }
+        .calculate-btn {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        .random-btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+        .reset-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+        .result-section.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .recursion-steps {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .step {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-left: 3px solid #3498db;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+        .step:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        .step.base-case {
+            border-left-color: #2ecc71;
+            background: #e8f6f3;
+        }
+        .step.recursive-case {
+            border-left-color: #f39c12;
+            background: #fef9e7;
+        }
+        .product {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #2d3436;
+        }
+        .array-display {
+            font-family: 'Courier New', monospace;
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 18px;
+            text-align: center;
+        }
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #f44336;
+            font-weight: bold;
+        }
+        .time-complexity {
+            font-family: 'Courier New', monospace;
+            background: #263238;
+            color: #80deea;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Рекурсивне обчислення добутку елементів масиву</h1>
+        
+        <div class="input-section">
+            <h2>Введіть елементи масиву</h2>
+            <label for="arrayInput">Введіть числа через кому, пробіл або новий рядок:</label>
+            <textarea id="arrayInput" placeholder="Наприклад: 2, 3, 5, 7, 11
+Або: 1 2 3 4 5
+Або просто: 10 20 30">2, 3, 5, 7, 11</textarea>
+            
+            <div class="button-group">
+                <button class="calculate-btn" onclick="calculateProduct()">
+                    <span>📊</span> Обчислити добуток
+                </button>
+                <button class="random-btn" onclick="generateRandomArray()">
+                    <span>🎲</span> Випадковий масив
+                </button>
+                <button class="reset-btn" onclick="resetAll()">
+                    <span>🗑️</span> Скинути
+                </button>
+            </div>
+        </div>
+        
+        <div id="resultSection" class="result-section"></div>
+    </div>
+
+    <script>
+        let recursionSteps = [];
+        
+        function recursiveProduct(arr, index = 0, depth = 0) {
+            if (arr.length === 0) {
+                recursionSteps.push({
+                    depth: depth,
+                    type: 'base-case',
+                    message: `Базовий випадок: порожній масив, повертаємо 1`,
+                    result: 1
+                });
+                return 1;
+            }
+            
+            if (index === arr.length - 1) {
+                recursionSteps.push({
+                    depth: depth,
+                    type: 'base-case',
+                    message: `Базовий випадок: arr[${index}] = ${arr[index]}, повертаємо ${arr[index]}`,
+                    result: arr[index]
+                });
+                return arr[index];
+            }
+            
+            const currentElement = arr[index];
+            recursionSteps.push({
+                depth: depth,
+                type: 'recursive-case',
+                message: `Рекурсивний виклик: arr[${index}] = ${currentElement} × product(arr, ${index + 1})`
+            });
+            
+            const restProduct = recursiveProduct(arr, index + 1, depth + 1);
+            const product = currentElement * restProduct;
+            
+            recursionSteps.push({
+                depth: depth,
+                type: 'result',
+                message: `Повернення: ${currentElement} × ${restProduct} = ${product}`,
+                result: product
+            });
+            
+            return product;
+        }
+        
+        function recursiveProductSlice(arr) {
+            if (arr.length === 0) {
+                recursionSteps.push({
+                    depth: 0,
+                    type: 'base-case',
+                    message: `Базовий випадок (slice): порожній масив, повертаємо 1`,
+                    result: 1
+                });
+                return 1;
+            }
+            
+            if (arr.length === 1) {
+                recursionSteps.push({
+                    depth: 0,
+                    type: 'base-case',
+                    message: `Базовий випадок (slice): [${arr[0]}], повертаємо ${arr[0]}`,
+                    result: arr[0]
+                });
+                return arr[0];
+            }
+            
+            const first = arr[0];
+            const rest = arr.slice(1);
+            
+            recursionSteps.push({
+                depth: arr.length,
+                type: 'recursive-case',
+                message: `Рекурсивний виклик (slice): ${first} × product([${rest}])`
+            });
+            
+            const restProduct = recursiveProductSlice(rest);
+            const product = first * restProduct;
+            
+            recursionSteps.push({
+                depth: arr.length,
+                type: 'result',
+                message: `Повернення (slice): ${first} × ${restProduct} = ${product}`,
+                result: product
+            });
+            
+            return product;
+        }
+        
+        function parseArrayInput(input) {
+            const cleaned = input.replace(/\s+/g, ' ').trim();
+            
+            let numbers;
+            if (cleaned.includes(',')) {
+                numbers = cleaned.split(',').map(num => num.trim());
+            } else {
+                numbers = cleaned.split(' ');
+            }
+            
+            const parsed = numbers
+                .map(num => parseFloat(num))
+                .filter(num => !isNaN(num));
+            
+            return parsed;
+        }
+        
+        function displayResults(arr, product, method) {
+            const resultSection = document.getElementById('resultSection');
+            
+            recursionSteps = [];
+            
+            let finalProduct;
+            if (method === 'index') {
+                finalProduct = recursiveProduct(arr);
+            } else {
+                finalProduct = recursiveProductSlice(arr);
+            }
+            
+            let resultHTML = `
+                <h2>📈 Результати обчислення</h2>
+                
+                <div class="array-display">
+                    Масив: [${arr.join(', ')}]
+                </div>
+                
+                <div class="product">
+                    Добуток елементів: ${finalProduct.toLocaleString()}
+                </div>
+                
+                <div class="info-box">
+                    <strong>Метод:</strong> ${method === 'index' ? 'Рекурсія з індексом' : 'Рекурсія з slice()'}<br>
+                    <strong>Кількість елементів:</strong> ${arr.length}<br>
+                    <strong>Кількість рекурсивних викликів:</strong> ${recursionSteps.filter(s => s.type === 'recursive-case').length}
+                </div>
+            `;
+            
+            if (recursionSteps.length > 0) {
+                resultHTML += `
+                    <h3>🔍 Кроки рекурсії:</h3>
+                    <div class="recursion-steps">
+                `;
+                
+                recursionSteps.forEach((step, index) => {
+                    const indent = '&nbsp;&nbsp;'.repeat(step.depth * 2);
+                    const stepClass = step.type === 'base-case' ? 'base-case' : 
+                                     step.type === 'recursive-case' ? 'recursive-case' : 'step';
+                    
+                    let stepHTML = `
+                        <div class="step ${stepClass}">
+                            ${indent}<strong>Крок ${index + 1}:</strong> ${step.message}
+                    `;
+                    
+                    if (step.result !== undefined) {
+                        stepHTML += `<br>${indent}<em>Результат: ${step.result}</em>`;
+                    }
+                    
+                    stepHTML += `</div>`;
+                    resultHTML += stepHTML;
+                });
+                
+                resultHTML += `</div>`;
+            }
+            
+            resultHTML += `
+                <div class="time-complexity">
+                    <strong>Складність алгоритму:</strong><br>
+                    • Часова: O(n) – лінійна<br>
+                    • Просторова: O(n) – через стек рекурсивних викликів<br>
+                    • Базовий випадок: порожній масив або один елемент<br>
+                    • Рекурсивний випадок: product(n) = arr[0] × product(arr[1..n-1])
+                </div>
+                
+                <div class="info-box">
+                    <strong>Математична формула:</strong><br>
+                    ∏(arr) = ${arr.map((num, i) => `arr[${i}]`).join(' × ')}<br>
+                    = ${arr.join(' × ')}<br>
+                    = ${finalProduct.toLocaleString()}
+                </div>
+            `;
+            
+            if (finalProduct > Number.MAX_SAFE_INTEGER) {
+                resultHTML += `
+                    <div class="error">
+                        ⚠️ Увага: результат перевищує максимальне безпечне ціле число в JavaScript (${Number.MAX_SAFE_INTEGER.toLocaleString()})<br>
+                        Може бути втрата точності!
+                    </div>
+                `;
+            }
+            
+            resultSection.innerHTML = resultHTML;
+            resultSection.className = 'result-section show';
+        }
+        
+        function calculateProduct() {
+            const input = document.getElementById('arrayInput').value.trim();
+            
+            if (!input) {
+                alert('Будь ласка, введіть елементи масиву!');
+                return;
+            }
+            
+            const arr = parseArrayInput(input);
+            
+            if (arr.length === 0) {
+                document.getElementById('resultSection').innerHTML = `
+                    <div class="error">
+                        Не вдалося розпізнати числа у введеному тексті.<br>
+                        Введіть числа через кому, пробіл або новий рядок.
+                    </div>
+                `;
+                document.getElementById('resultSection').className = 'result-section show';
+                return;
+            }
+            
+            const method = confirm('Оберіть метод рекурсії:\n\nOK - з використанням індексу (зберігає оригінальний масив)\nCancel - з використанням slice() (створює нові масиви)') 
+                ? 'index' : 'slice';
+            
+            displayResults(arr, 0, method);
+        }
+        
+        function generateRandomArray() {
+            const length = Math.floor(Math.random() * 8) + 3; // 3-10 елементів
+            const arr = [];
+            
+            for (let i = 0; i < length; i++) {
+                arr.push(Math.floor(Math.random() * 20) + 1);
+            }
+            
+            document.getElementById('arrayInput').value = arr.join(', ');
+            
+            setTimeout(() => calculateProduct(), 100);
+        }
+        
+        function resetAll() {
+            document.getElementById('arrayInput').value = '';
+            document.getElementById('resultSection').className = 'result-section';
+            recursionSteps = [];
+        }
+        
+        document.getElementById('arrayInput').addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                calculateProduct();
+            }
+        });
+        
+        window.onload = function() {
+            setTimeout(() => calculateProduct(), 500);
+        };
+    </script>
+</body>
+</html>
