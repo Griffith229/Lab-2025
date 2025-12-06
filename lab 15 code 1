@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма з Radio Buttons</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .radio-group {
+            margin: 20px 0;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .radio-option:hover {
+            background-color: #e8f4fc;
+            border-color: #3498db;
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .radio-label {
+            font-size: 16px;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .submit-btn:active {
+            transform: translateY(2px);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #27ae60;
+        }
+        
+        .result h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .result-content {
+            font-size: 16px;
+            color: #333;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .instructions {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #2e7d32;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #27ae60;
+        }
+        
+        .highlight {
+            background-color: #fffde7;
+            padding: 3px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Форма з вибором опції</h1>
+        
+        <div class="instructions">
+            <h3>Інструкція:</h3>
+            <p>1. Введіть текст у поле форми</p>
+            <p>2. Оберіть одну з трьох опцій (radio buttons)</p>
+            <p>3. При виборі опції з'явиться alert з інформацією про вибір</p>
+            <p>4. Натисніть кнопку "Надіслати" для відправки форми</p>
+        </div>
+        
+        <form id="myForm">
+            <div class="form-group">
+                <label for="textInput">Введіть текст:</label>
+                <input type="text" id="textInput" name="textInput" placeholder="Введіть ваш текст тут...">
+            </div>
+            
+            <div class="radio-group">
+                <p style="font-weight: bold; margin-bottom: 15px; color: #2c3e50;">Оберіть опцію:</p>
+                
+                <div class="radio-option">
+                    <input type="radio" id="option1" name="option" value="option1">
+                    <label for="option1" class="radio-label">Опція 1: Базовий вибір</label>
+                </div>
+                
+                <div class="radio-option">
+                    <input type="radio" id="option2" name="option" value="option2">
+                    <label for="option2" class="radio-label">Опція 2: Розширений вибір</label>
+                </div>
+                
+                <div class="radio-option">
+                    <input type="radio" id="option3" name="option" value="option3">
+                    <label for="option3" class="radio-label">Опція 3: Преміум вибір</label>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Надіслати форму</button>
+        </form>
+        
+        <div class="result">
+            <h3>Результат відправки:</h3>
+            <div class="result-content" id="resultDisplay">
+                Форма ще не відправлена
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('myForm');
+        const textInput = document.getElementById('textInput');
+        const radioButtons = document.querySelectorAll('input[name="option"]');
+        const resultDisplay = document.getElementById('resultDisplay');
+        
+        radioButtons.forEach(radio => {
+            radio.addEventListener('click', function() {
+                const selectedValue = this.value;
+                const selectedText = this.nextElementSibling.textContent;
+                
+                alert(`Ви обрали: ${selectedText}\nЗначення: ${selectedValue}`);
+            });
+        });
+        
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = {
+                text: textInput.value,
+                option: null
+            };
+            
+            radioButtons.forEach(radio => {
+                if (radio.checked) {
+                    formData.option = radio.value;
+                }
+            });
+            
+            if (formData.text && formData.option) {
+                resultDisplay.innerHTML = `
+                    <div>
+                        <strong>Текст:</strong> ${formData.text}<br>
+                        <strong>Обрана опція:</strong> ${formData.option}<br>
+                        <strong>Статус:</strong> Успішно відправлено на сервер!
+                    </div>
+                `;
+                resultDisplay.style.borderLeft = '5px solid #27ae60';
+                
+                console.log('Дані відправлені на сервер:', formData);
+                
+                setTimeout(() => {
+                    alert(`Дані відправлені на сервер!\n\nТекст: ${formData.text}\nОпція: ${formData.option}`);
+                }, 100);
+            } else {
+                resultDisplay.innerHTML = `
+                    <div style="color: #e74c3c;">
+                        <strong>Помилка:</strong> Будь ласка, заповніть всі поля форми!<br>
+                        ${!formData.text ? '• Введіть текст у поле<br>' : ''}
+                        ${!formData.option ? '• Оберіть одну з опцій' : ''}
+                    </div>
+                `;
+                resultDisplay.style.borderLeft = '5px solid #e74c3c';
+            }
+        });
+        
+        textInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                this.style.borderColor = '#27ae60';
+            } else {
+                this.style.borderColor = '#ddd';
+            }
+        });
+        
+        window.addEventListener('load', function() {
+            console.log('Форма готова до використання!');
+            console.log('Інструкція:');
+            console.log('1. Введіть текст у поле');
+            console.log('2. Клацніть на будь-який radio button');
+            console.log('3. Побачите alert з інформацією про вибір');
+            console.log('4. Натисніть кнопку "Надіслати форму"');
+        });
+    </script>
+</body>
+</html>
