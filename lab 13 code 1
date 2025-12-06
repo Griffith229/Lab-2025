@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Розрахунок характеристик паралелепіпеда</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .result-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: white;
+            border-left: 4px solid #4CAF50;
+            border-radius: 3px;
+        }
+        .result-label {
+            font-weight: bold;
+            color: #333;
+        }
+        .result-value {
+            color: #4CAF50;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .error {
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .instructions {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Розрахунок характеристик паралелепіпеда</h1>
+        
+        <div class="instructions">
+            <strong>Інструкція:</strong> Введіть значення в усі три поля. Обчислення почнуться автоматично після введення числа в кожне поле.
+        </div>
+        
+        <div class="input-group">
+            <label for="length">Довжина (a):</label>
+            <input type="number" id="length" placeholder="Введіть довжину" step="any" min="0">
+            <div class="error" id="error-length">Будь ласка, введіть коректне додатнє число</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="width">Ширина (b):</label>
+            <input type="number" id="width" placeholder="Введіть ширину" step="any" min="0">
+            <div class="error" id="error-width">Будь ласка, введіть коректне додатнє число</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="height">Висота (c):</label>
+            <input type="number" id="height" placeholder="Введіть висоту" step="any" min="0">
+            <div class="error" id="error-height">Будь ласка, введіть коректне додатнє число</div>
+        </div>
+        
+        <div class="results">
+            <h2>Результати обчислень:</h2>
+            <div class="result-item">
+                <div class="result-label">Об'єм (V = a × b × c):</div>
+                <div class="result-value" id="volume">—</div>
+            </div>
+            
+            <div class="result-item">
+                <div class="result-label">Площа повної поверхні (S = 2×(ab + bc + ac)):</div>
+                <div class="result-value" id="surface-area">—</div>
+            </div>
+            
+            <div class="result-item">
+                <div class="result-label">Головна діагональ (d = √(a² + b² + c²)):</div>
+                <div class="result-value" id="diagonal">—</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const lengthInput = document.getElementById('length');
+        const widthInput = document.getElementById('width');
+        const heightInput = document.getElementById('height');
+        
+        const volumeOutput = document.getElementById('volume');
+        const surfaceAreaOutput = document.getElementById('surface-area');
+        const diagonalOutput = document.getElementById('diagonal');
+        
+        const errorLength = document.getElementById('error-length');
+        const errorWidth = document.getElementById('error-width');
+        const errorHeight = document.getElementById('error-height');
+        
+        function validateInput(value) {
+            if (value === '' || isNaN(value) || parseFloat(value) <= 0) {
+                return false;
+            }
+            return true;
+        }
+        
+        function calculateParallelepiped() {
+            const length = parseFloat(lengthInput.value);
+            const width = parseFloat(widthInput.value);
+            const height = parseFloat(heightInput.value);
+            
+            const isLengthValid = validateInput(lengthInput.value);
+            const isWidthValid = validateInput(widthInput.value);
+            const isHeightValid = validateInput(heightInput.value);
+            
+            errorLength.style.display = isLengthValid ? 'none' : 'block';
+            errorWidth.style.display = isWidthValid ? 'none' : 'block';
+            errorHeight.style.display = isHeightValid ? 'none' : 'block';
+            
+            if (isLengthValid && isWidthValid && isHeightValid) {
+                const volume = length * width * height;
+                const surfaceArea = 2 * (length * width + width * height + length * height);
+                const diagonal = Math.sqrt(length * length + width * width + height * height);
+                
+                volumeOutput.textContent = volume.toFixed(2);
+                surfaceAreaOutput.textContent = surfaceArea.toFixed(2);
+                diagonalOutput.textContent = diagonal.toFixed(2);
+            } else {
+                volumeOutput.textContent = '—';
+                surfaceAreaOutput.textContent = '—';
+                diagonalOutput.textContent = '—';
+            }
+        }
+        
+        lengthInput.addEventListener('input', calculateParallelepiped);
+        widthInput.addEventListener('input', calculateParallelepiped);
+        heightInput.addEventListener('input', calculateParallelepiped);
+        
+        lengthInput.addEventListener('focus', function() {
+            this.style.borderColor = '#4CAF50';
+        });
+        
+        widthInput.addEventListener('focus', function() {
+            this.style.borderColor = '#4CAF50';
+        });
+        
+        heightInput.addEventListener('focus', function() {
+            this.style.borderColor = '#4CAF50';
+        });
+        
+        lengthInput.addEventListener('blur', function() {
+            if (validateInput(this.value)) {
+                this.style.borderColor = '#ddd';
+            }
+        });
+        
+        widthInput.addEventListener('blur', function() {
+            if (validateInput(this.value)) {
+                this.style.borderColor = '#ddd';
+            }
+        });
+        
+        heightInput.addEventListener('blur', function() {
+            if (validateInput(this.value)) {
+                this.style.borderColor = '#ddd';
+            }
+        });
+    </script>
+</body>
+</html>
