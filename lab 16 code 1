@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест з комп'ютерних дисциплін</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .test-info {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 5px solid #27ae60;
+        }
+        
+        .test-info p {
+            margin-bottom: 5px;
+            color: #2e7d32;
+        }
+        
+        .question-block {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .question-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .number {
+            background-color: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .option:hover {
+            background-color: #e8f4fc;
+            border-color: #3498db;
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .option-label {
+            font-size: 16px;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        button {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        #submitBtn {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        #submitBtn:hover {
+            background-color: #219653;
+        }
+        
+        #resetBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        #resetBtn:hover {
+            background-color: #c0392b;
+        }
+        
+        .result-container {
+            margin-top: 40px;
+            padding: 30px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result-header {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .score-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .score-number {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 10px 0;
+        }
+        
+        .score-text {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #ecf0f1;
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .details {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .details h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .details-list {
+            list-style-type: none;
+        }
+        
+        .details-list li {
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .correct {
+            background-color: #d5f4e6;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .incorrect {
+            background-color: #fdeaea;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .status-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .correct .status-icon {
+            color: #27ae60;
+        }
+        
+        .incorrect .status-icon {
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тест з комп'ютерних дисциплін</h1>
+        <p class="subtitle">20 питань з однією правильною відповіддю в кожному</p>
+        
+        <div class="test-info">
+            <p>Оберіть одну правильну відповідь для кожного питання.</p>
+            <p>Кількість питань: 20 | Варіантів відповіді: 5-6 на питання</p>
+        </div>
+        
+        <form id="testForm">
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">1</div>
+                    Питання 1: Що таке HTML?
+                </div>
+                <div class="question-text">
+                    HTML - це мова розмітки, що використовується для створення веб-сторінок.
+                    Яке з наведених тверджень найточніше описує HTML?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q1" value="1" id="q1a1">
+                        <label for="q1a1" class="option-label">Мова програмування для серверів</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="2" id="q1a2">
+                        <label for="q1a2" class="option-label">Мова розмітки гіпертексту</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="3" id="q1a3">
+                        <label for="q1a3" class="option-label">Мова стилізації веб-сторінок</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="4" id="q1a4">
+                        <label for="q1a4" class="option-label">База даних для веб-сайтів</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="5" id="q1a5">
+                        <label for="q1a5" class="option-label">Фреймворк для JavaScript</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">2</div>
+                    Питання 2: Що таке CSS?
+                </div>
+                <div class="question-text">
+                    CSS використовується для стилізації веб-сторінок.
+                    Яка з наведених відповідей найкраще описує призначення CSS?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q2" value="1" id="q2a1">
+                        <label for="q2a1" class="option-label">Мова програмування для анімацій</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="2" id="q2a2">
+                        <label for="q2a2" class="option-label">Мова таблиць стилів</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="3" id="q2a3">
+                        <label for="q2a3" class="option-label">База даних для зберігання стилів</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="4" id="q2a4">
+                        <label for="q2a4" class="option-label">Мова для створення структури сайту</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="5" id="q2a5">
+                        <label for="q2a5" class="option-label">Фреймворк для HTML</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">3</div>
+                    Питання 3: Що таке JavaScript?
+                </div>
+                <div class="question-text">
+                    JavaScript - це мова програмування, що використовується для створення інтерактивних веб-сторінок.
+                    Яке з тверджень є правильним?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q3" value="1" id="q3a1">
+                        <label for="q3a1" class="option-label">Це компілювана мова програмування</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="2" id="q3a2">
+                        <label for="q3a2" class="option-label">Це інтерпретована мова програмування</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="3" id="q3a3">
+                        <label for="q3a3" class="option-label">Це мова розмітки</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="4" id="q3a4">
+                        <label for="q3a4" class="option-label">Це мова стилізації</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="5" id="q3a5">
+                        <label for="q3a5" class="option-label">Це системна мова програмування</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">4</div>
+                    Питання 4: Що таке алгоритм?
+                </div>
+                <div class="question-text">
+                    Алгоритм - це послідовність кроків для вирішення певної задачі.
+                    Яке визначення є найточнішим?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q4" value="1" id="q4a1">
+                        <label for="q4a1" class="option-label">Математична формула</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="2" id="q4a2">
+                        <label for="q4a2" class="option-label">Скінчена послідовність інструкцій</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="3" id="q4a3">
+                        <label for="q4a3" class="option-label">Комп'ютерна програма</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="4" id="q4a4">
+                        <label for="q4a4" class="option-label">Математична теорема</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="5" id="q4a5">
+                        <label for="q4a5" class="option-label">Фізичний закон</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">5</div>
+                    Питання 5: Що таке база даних?
+                </div>
+                <div class="question-text">
+                    База даних - це організована структура для зберігання даних.
+                    Яке визначення є найправильнішим?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q5" value="1" id="q5a1">
+                        <label for="q5a1" class="option-label">Текстовий файл з даними</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="2" id="q5a2">
+                        <label for="q5a2" class="option-label">Організована колекція даних</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="3" id="q5a3">
+                        <label for="q5a3" class="option-label">Програма для обробки даних</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="4" id="q5a4">
+                        <label for="q5a4" class="option-label">Апаратне забезпечення для зберігання</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="5" id="q5a5">
+                        <label for="q5a5" class="option-label">Мережевий протокол</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">6</div>
+                    Питання 6: Що таке SQL?
+                </div>
+                <div class="question-text">
+                    SQL використовується для роботи з базами даних.
+                    Яке твердження є правильним?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q6" value="1" id="q6a1">
+                        <label for="q6a1" class="option-label">Мова програмування</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="2" id="q6a2">
+                        <label for="q6a2" class="option-label">Мова запитів до бази даних</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="3" id="q6a3">
+                        <label for="q6a3" class="option-label">Операційна система</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="4" id="q6a4">
+                        <label for="q6a4" class="option-label">Фреймворк для веб-розробки</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="5" id="q6a5">
+                        <label for="q6a5" class="option-label">Браузер</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">7</div>
+                    Питання 7: Що таке API?
+                </div>
+                <div class="question-text">
+                    API дозволяє різним програмним компонентам взаємодіяти між собою.
+                    Що означає абревіатура API?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q7" value="1" id="q7a1">
+                        <label for="q7a1" class="option-label">Application Programming Interface</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" value="2" id="q7a2">
+                        <label for="q7a2" class="option-label">Advanced Program Integration</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" value="3" id="q7a3">
+                        <label for="q7a3" class="option-label">Automated Process Interface</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" value="4" id="q7a4">
+                        <label for="q7a4" class="option-label">Application Process Integration</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" value="5" id="q7a5">
+                        <label for="q7a5" class="option-label">Automated Programming Interface</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">8</div>
+                    Питання 8: Що таке Git?
+                </div>
+                <div class="question-text">
+                    Git використовується для контролю версій коду.
+                    Яке твердження є правильним?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q8" value="1" id="q8a1">
+                        <label for="q8a1" class="option-label">Мова програмування</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" value="2" id="q8a2">
+                        <label for="q8a2" class="option-label">Система контролю версій</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" value="3" id="q8a3">
+                        <label for="q8a3" class="option-label">База даних</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" value="4" id="q8a4">
+                        <label for="q8a4" class="option-label">Текстовий редактор</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" value="5" id="q8a5">
+                        <label for="q8a5" class="option-label">Операційна система</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">9</div>
+                    Питання 9: Що таке HTTP?
+                </div>
+                <div class="question-text">
+                    HTTP використовується для передачі даних в інтернеті.
+                    Що означає абревіатура HTTP?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q9" value="1" id="q9a1">
+                        <label for="q9a1" class="option-label">HyperText Transfer Protocol</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" value="2" id="q9a2">
+                        <label for="q9a2" class="option-label">High Transfer Text Protocol</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" value="3" id="q9a3">
+                        <label for="q9a3" class="option-label">Hyper Transfer Text Process</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" value="4" id="q9a4">
+                        <label for="q9a4" class="option-label">High Text Transfer Protocol</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" value="5" id="q9a5">
+                        <label for="q9a5" class="option-label">Hyper Transfer Protocol Text</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">10</div>
+                    Питання 10: Що таке ООП?
+                </div>
+                <div class="question-text">
+                    ООП - це парадигма програмування.
+                    Що означає абревіатура ООП?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q10" value="1" id="q10a1">
+                        <label for="q10a1" class="option-label">Object Oriented Programming</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" value="2" id="q10a2">
+                        <label for="q10a2" class="option-label">Online Object Programming</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" value="3" id="q10a3">
+                        <label for="q10a3" class="option-label">Object Optimization Process</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" value="4" id="q10a4">
+                        <label for="q10a4" class="option-label">Oriented Object Protocol</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" value="5" id="q10a5">
+                        <label for="q10a5" class="option-label">Optimized Object Programming</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">11</div>
+                    Питання 11: Що таке DNS?
+                </div>
+                <div class="question-text">
+                    DNS використовується для перетворення доменних імен в IP-адреси.
+                    Що означає абревіатура DNS?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q11" value="1" id="q11a1">
+                        <label for="q11a1" class="option-label">Domain Name System</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" value="2" id="q11a2">
+                        <label for="q11a2" class="option-label">Digital Network Service</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" value="3" id="q11a3">
+                        <label for="q11a3" class="option-label">Data Name Server</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" value="4" id="q11a4">
+                        <label for="q11a4" class="option-label">Domain Network System</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" value="5" id="q11a5">
+                        <label for="q11a5" class="option-label">Digital Name Service</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">12</div>
+                    Питання 12: Що таке VPN?
+                </div>
+                <div class="question-text">
+                    VPN дозволяє створювати захищене з'єднання через інтернет.
+                    Що означає абревіатура VPN?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q12" value="1" id="q12a1">
+                        <label for="q12a1" class="option-label">Virtual Private Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" value="2" id="q12a2">
+                        <label for="q12a2" class="option-label">Visual Private Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" value="3" id="q12a3">
+                        <label for="q12a3" class="option-label">Virtual Public Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" value="4" id="q12a4">
+                        <label for="q12a4" class="option-label">Visual Protected Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" value="5" id="q12a5">
+                        <label for="q12a5" class="option-label">Virtual Personal Network</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">13</div>
+                    Питання 13: Що таке RAM?
+                </div>
+                <div class="question-text">
+                    RAM - це тип комп'ютерної пам'яті.
+                    Що означає абревіатура RAM?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q13" value="1" id="q13a1">
+                        <label for="q13a1" class="option-label">Random Access Memory</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" value="2" id="q13a2">
+                        <label for="q13a2" class="option-label">Read Access Memory</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" value="3" id="q13a3">
+                        <label for="q13a3" class="option-label">Random Available Memory</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" value="4" id="q13a4">
+                        <label for="q13a4" class="option-label">Read Available Memory</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" value="5" id="q13a5">
+                        <label for="q13a5" class="option-label">Rapid Access Memory</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">14</div>
+                    Питання 14: Що таке CPU?
+                </div>
+                <div class="question-text">
+                    CPU - це головний компонент комп'ютера.
+                    Що означає абревіатура CPU?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q14" value="1" id="q14a1">
+                        <label for="q14a1" class="option-label">Central Processing Unit</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" value="2" id="q14a2">
+                        <label for="q14a2" class="option-label">Computer Processing Unit</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" value="3" id="q14a3">
+                        <label for="q14a3" class="option-label">Central Program Unit</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" value="4" id="q14a4">
+                        <label for="q14a4" class="option-label">Computer Program Unit</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" value="5" id="q14a5">
+                        <label for="q14a5" class="option-label">Central Processor Unit</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">15</div>
+                    Питання 15: Що таке GPU?
+                </div>
+                <div class="question-text">
+                    GPU спеціалізується на графічних обчисленнях.
+                    Що означає абревіатура GPU?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q15" value="1" id="q15a1">
+                        <label for="q15a1" class="option-label">Graphics Processing Unit</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" value="2" id="q15a2">
+                        <label for="q15a2" class="option-label">Graphics Program Unit</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" value="3" id="q15a3">
+                        <label for="q15a3" class="option-label">General Processing Unit</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" value="4" id="q15a4">
+                        <label for="q15a4" class="option-label">Graphics Processor Unit</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" value="5" id="q15a5">
+                        <label for="q15a5" class="option-label">General Program Unit</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">16</div>
+                    Питання 16: Що таке SSD?
+                </div>
+                <div class="question-text">
+                    SSD - це тип запам'ятовуючого пристрою.
+                    Що означає абревіатура SSD?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q16" value="1" id="q16a1">
+                        <label for="q16a1" class="option-label">Solid State Drive</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" value="2" id="q16a2">
+                        <label for="q16a2" class="option-label">Solid Storage Device</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" value="3" id="q16a3">
+                        <label for="q16a3" class="option-label">System Storage Drive</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" value="4" id="q16a4">
+                        <label for="q16a4" class="option-label">Solid System Drive</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" value="5" id="q16a5">
+                        <label for="q16a5" class="option-label">Storage State Device</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">17</div>
+                    Питання 17: Що таке URL?
+                </div>
+                <div class="question-text">
+                    URL використовується для вказівки адреси ресурсу в інтернеті.
+                    Що означає абревіатура URL?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q17" value="1" id="q17a1">
+                        <label for="q17a1" class="option-label">Uniform Resource Locator</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" value="2" id="q17a2">
+                        <label for="q17a2" class="option-label">Universal Resource Locator</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" value="3" id="q17a3">
+                        <label for="q17a3" class="option-label">Uniform Resource Link</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" value="4" id="q17a4">
+                        <label for="q17a4" class="option-label">Universal Resource Link</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" value="5" id="q17a5">
+                        <label for="q17a5" class="option-label">Uniform Reference Locator</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">18</div>
+                    Питання 18: Що таке IP?
+                </div>
+                <div class="question-text">
+                    IP-адреса ідентифікує пристрій в мережі.
+                    Що означає абревіатура IP?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q18" value="1" id="q18a1">
+                        <label for="q18a1" class="option-label">Internet Protocol</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" value="2" id="q18a2">
+                        <label for="q18a2" class="option-label">Internet Provider</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" value="3" id="q18a3">
+                        <label for="q18a3" class="option-label">International Protocol</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" value="4" id="q18a4">
+                        <label for="q18a4" class="option-label">Internet Port</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" value="5" id="q18a5">
+                        <label for="q18a5" class="option-label">Internal Protocol</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">19</div>
+                    Питання 19: Що таке LAN?
+                </div>
+                <div class="question-text">
+                    LAN - це тип комп'ютерної мережі.
+                    Що означає абревіатура LAN?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q19" value="1" id="q19a1">
+                        <label for="q19a1" class="option-label">Local Area Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q19" value="2" id="q19a2">
+                        <label for="q19a2" class="option-label">Large Area Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q19" value="3" id="q19a3">
+                        <label for="q19a3" class="option-label">Local Access Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q19" value="4" id="q19a4">
+                        <label for="q19a4" class="option-label">Large Access Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q19" value="5" id="q19a5">
+                        <label for="q19a5" class="option-label">Local Area Node</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">
+                    <div class="number">20</div>
+                    Питання 20: Що таке WAN?
+                </div>
+                <div class="question-text">
+                    WAN - це тип комп'ютерної мережі.
+                    Що означає абревіатура WAN?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q20" value="1" id="q20a1">
+                        <label for="q20a1" class="option-label">Wide Area Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q20" value="2" id="q20a2">
+                        <label for="q20a2" class="option-label">Wireless Area Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q20" value="3" id="q20a3">
+                        <label for="q20a3" class="option-label">Wide Access Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q20" value="4" id="q20a4">
+                        <label for="q20a4" class="option-label">Wireless Access Network</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q20" value="5" id="q20a5">
+                        <label for="q20a5" class="option-label">Wide Area Node</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button type="button" id="submitBtn">Завершити тест і перевірити відповіді</button>
+                <button type="button" id="resetBtn">Скинути всі відповіді</button>
+            </div>
+        </form>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="result-header">Результати тесту</div>
+            
+            <div class="score-display">
+                <div class="score-number" id="scoreNumber">0/20</div>
+                <div class="score-text" id="scoreText">Ваш результат</div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+                </div>
+            </div>
+            
+            <div class="details">
+                <h3>Детальна інформація:</h3>
+                <ul class="details-list" id="detailsList">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const correctAnswers = {
+            q1: "2",
+            q2: "2",
+            q3: "2",
+            q4: "2",
+            q5: "2",
+            q6: "2",
+            q7: "1",
+            q8: "2",
+            q9: "1",
+            q10: "1",
+            q11: "1",
+            q12: "1",
+            q13: "1",
+            q14: "1",
+            q15: "1",
+            q16: "1",
+            q17: "1",
+            q18: "1",
+            q19: "1",
+            q20: "1"
+        };
+        
+        const questionsText = {
+            q1: "Що таке HTML?",
+            q2: "Що таке CSS?",
+            q3: "Що таке JavaScript?",
+            q4: "Що таке алгоритм?",
+            q5: "Що таке база даних?",
+            q6: "Що таке SQL?",
+            q7: "Що таке API?",
+            q8: "Що таке Git?",
+            q9: "Що таке HTTP?",
+            q10: "Що таке ООП?",
+            q11: "Що таке DNS?",
+            q12: "Що таке VPN?",
+            q13: "Що таке RAM?",
+            q14: "Що таке CPU?",
+            q15: "Що таке GPU?",
+            q16: "Що таке SSD?",
+            q17: "Що таке URL?",
+            q18: "Що таке IP?",
+            q19: "Що таке LAN?",
+            q20: "Що таке WAN?"
+        };
+        
+        const optionsText = {
+            q1: {
+                "1": "Мова програмування для серверів",
+                "2": "Мова розмітки гіпертексту",
+                "3": "Мова стилізації веб-сторінок",
+                "4": "База даних для веб-сайтів",
+                "5": "Фреймворк для JavaScript"
+            },
+            q2: {
+                "1": "Мова програмування для анімацій",
+                "2": "Мова таблиць стилів",
+                "3": "База даних для зберігання стилів",
+                "4": "Мова для створення структури сайту",
+                "5": "Фреймворк для HTML"
+            },
+            q3: {
+                "1": "Це компілювана мова програмування",
+                "2": "Це інтерпретована мова програмування",
+                "3": "Це мова розмітки",
+                "4": "Це мова стилізації",
+                "5": "Це системна мова програмування"
+            },
+            q4: {
+                "1": "Математична формула",
+                "2": "Скінчена послідовність інструкцій",
+                "3": "Комп'ютерна програма",
+                "4": "Математична теорема",
+                "5": "Фізичний закон"
+            },
+            q5: {
+                "1": "Текстовий файл з даними",
+                "2": "Організована колекція даних",
+                "3": "Програма для обробки даних",
+                "4": "Апаратне забезпечення для зберігання",
+                "5": "Мережевий протокол"
+            },
+            q6: {
+                "1": "Мова програмування",
+                "2": "Мова запитів до бази даних",
+                "3": "Операційна система",
+                "4": "Фреймворк для веб-розробки",
+                "5": "Браузер"
+            },
+            q7: {
+                "1": "Application Programming Interface",
+                "2": "Advanced Program Integration",
+                "3": "Automated Process Interface",
+                "4": "Application Process Integration",
+                "5": "Automated Programming Interface"
+            },
+            q8: {
+                "1": "Мова програмування",
+                "2": "Система контролю версій",
+                "3": "База даних",
+                "4": "Текстовий редактор",
+                "5": "Операційна система"
+            },
+            q9: {
+                "1": "HyperText Transfer Protocol",
+                "2": "High Transfer Text Protocol",
+                "3": "Hyper Transfer Text Process",
+                "4": "High Text Transfer Protocol",
+                "5": "Hyper Transfer Protocol Text"
+            },
+            q10: {
+                "1": "Object Oriented Programming",
+                "2": "Online Object Programming",
+                "3": "Object Optimization Process",
+                "4": "Oriented Object Protocol",
+                "5": "Optimized Object Programming"
+            },
+            q11: {
+                "1": "Domain Name System",
+                "2": "Digital Network Service",
+                "3": "Data Name Server",
+                "4": "Domain Network System",
+                "5": "Digital Name Service"
+            },
+            q12: {
+                "1": "Virtual Private Network",
+                "2": "Visual Private Network",
+                "3": "Virtual Public Network",
+                "4": "Visual Protected Network",
+                "5": "Virtual Personal Network"
+            },
+            q13: {
+                "1": "Random Access Memory",
+                "2": "Read Access Memory",
+                "3": "Random Available Memory",
+                "4": "Read Available Memory",
+                "5": "Rapid Access Memory"
+            },
+            q14: {
+                "1": "Central Processing Unit",
+                "2": "Computer Processing Unit",
+                "3": "Central Program Unit",
+                "4": "Computer Program Unit",
+                "5": "Central Processor Unit"
+            },
+            q15: {
+                "1": "Graphics Processing Unit",
+                "2": "Graphics Program Unit",
+                "3": "General Processing Unit",
+                "4": "Graphics Processor Unit",
+                "5": "General Program Unit"
+            },
+            q16: {
+                "1": "Solid State Drive",
+                "2": "Solid Storage Device",
+                "3": "System Storage Drive",
+                "4": "Solid System Drive",
+                "5": "Storage State Device"
+            },
+            q17: {
+                "1": "Uniform Resource Locator",
+                "2": "Universal Resource Locator",
+                "3": "Uniform Resource Link",
+                "4": "Universal Resource Link",
+                "5": "Uniform Reference Locator"
+            },
+            q18: {
+                "1": "Internet Protocol",
+                "2": "Internet Provider",
+                "3": "International Protocol",
+                "4": "Internet Port",
+                "5": "Internal Protocol"
+            },
+            q19: {
+                "1": "Local Area Network",
+                "2": "Large Area Network",
+                "3": "Local Access Network",
+                "4": "Large Access Network",
+                "5": "Local Area Node"
+            },
+            q20: {
+                "1": "Wide Area Network",
+                "2": "Wireless Area Network",
+                "3": "Wide Access Network",
+                "4": "Wireless Access Network",
+                "5": "Wide Area Node"
+            }
+        };
+        
+        const form = document.getElementById('testForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        const scoreNumber = document.getElementById('scoreNumber');
+        const scoreText = document.getElementById('scoreText');
+        const progressFill = document.getElementById('progressFill');
+        const detailsList = document.getElementById('detailsList');
+        
+        submitBtn.addEventListener('click', function() {
+            let score = 0;
+            const totalQuestions = 20;
+            const results = [];
+            
+            detailsList.innerHTML = '';
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionName = `q${i}`;
+                const selectedOption = form.querySelector(`input[name="${questionName}"]:checked`);
+                
+                if (selectedOption) {
+                    const isCorrect = selectedOption.value === correctAnswers[questionName];
+                    
+                    if (isCorrect) {
+                        score++;
+                    }
+                    
+                    results.push({
+                        question: questionName,
+                        userAnswer: selectedOption.value,
+                        correctAnswer: correctAnswers[questionName],
+                        isCorrect: isCorrect
+                    });
+                } else {
+                    results.push({
+                        question: questionName,
+                        userAnswer: null,
+                        correctAnswer: correctAnswers[questionName],
+                        isCorrect: false
+                    });
+                }
+            }
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            scoreNumber.textContent = `${score}/${totalQuestions}`;
+            
+            let resultMessage = "";
+            if (percentage >= 90) {
+                resultMessage = "Відмінний результат! Ви добре знаєте матеріал.";
+            } else if (percentage >= 70) {
+                resultMessage = "Добрий результат. Є що покращити.";
+            } else if (percentage >= 50) {
+                resultMessage = "Задовільний результат. Потрібно повторити матеріал.";
+            } else {
+                resultMessage = "Потрібно краще вивчити матеріал.";
+            }
+            
+            scoreText.textContent = resultMessage;
+            
+            progressFill.style.width = `${percentage}%`;
+            progressFill.textContent = `${percentage}%`;
+            
+            results.forEach((result, index) => {
+                const li = document.createElement('li');
+                li.className = result.isCorrect ? 'correct' : 'incorrect';
+                
+                const questionNum = index + 1;
+                const questionText = questionsText[result.question];
+                
+                let userAnswerText = "Не відповів";
+                if (result.userAnswer !== null && optionsText[result.question]) {
+                    userAnswerText = optionsText[result.question][result.userAnswer];
+                }
+                
+                let correctAnswerText = "";
+                if (optionsText[result.question] && optionsText[result.question][result.correctAnswer]) {
+                    correctAnswerText = optionsText[result.question][result.correctAnswer];
+                }
+                
+                li.innerHTML = `
+                    <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                    <div>
+                        <strong>Питання ${questionNum}:</strong> ${questionText}<br>
+                        <strong>Ваша відповідь:</strong> ${userAnswerText}<br>
+                        ${!result.isCorrect ? `<strong>Правильна відповідь:</strong> ${correctAnswerText}` : ''}
+                    </div>
+                `;
+                
+                detailsList.appendChild(li);
+            });
+            
+            resultContainer.style.display = 'block';
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        resetBtn.addEventListener('click', function() {
+            const allRadioButtons = form.querySelectorAll('input[type="radio"]');
+            allRadioButtons.forEach(radio => {
+                radio.checked = false;
+            });
+            
+            const allOptions = form.querySelectorAll('.option');
+            allOptions.forEach(option => {
+                option.style.borderColor = '#e0e0e0';
+                option.style.backgroundColor = 'white';
+            });
+            
+            resultContainer.style.display = 'none';
+            form.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        const radioButtons = form.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const questionBlock = this.closest('.question-block');
+                const options = questionBlock.querySelectorAll('.option');
+                
+                options.forEach(option => {
+                    option.style.borderColor = '#e0e0e0';
+                    option.style.backgroundColor = 'white';
+                });
+                
+                const selectedOption = this.closest('.option');
+                selectedOption.style.borderColor = '#3498db';
+                selectedOption.style.backgroundColor = '#e8f4fc';
+            });
+        });
+    </script>
+</body>
+</html>
