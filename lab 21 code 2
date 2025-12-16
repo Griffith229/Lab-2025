@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Моделювання автобуса - Динамічний імпорт</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .panel-section {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px 0 0;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .bus-btn {
+            background-color: #2196F3;
+        }
+        .bus-btn:hover {
+            background-color: #0b7dda;
+        }
+        .passenger-btn {
+            background-color: #FF9800;
+        }
+        .passenger-btn:hover {
+            background-color: #f57c00;
+        }
+        .danger-btn {
+            background-color: #f44336;
+        }
+        .danger-btn:hover {
+            background-color: #d32f2f;
+        }
+        .bus-display {
+            margin: 30px 0;
+            padding: 25px;
+            border: 2px solid #2196F3;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        }
+        .passengers-display {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #FF9800;
+            border-radius: 5px;
+            background-color: #fff3e0;
+        }
+        .bus-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .info-card {
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        .info-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .info-label {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .passenger-card {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            background: white;
+            border: 1px solid #FF9800;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .passenger-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .passenger-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .passenger-details {
+            font-size: 12px;
+            color: #666;
+        }
+        .bus-seats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .seat {
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .seat.occupied {
+            border-color: #FF9800;
+            background-color: #fff3e0;
+        }
+        .seat.empty {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+        .seat-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .console {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #343a40;
+            color: #f8f9fa;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            height: 250px;
+            overflow-y: auto;
+        }
+        .console-title {
+            color: #20c997;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .status-bar {
+            padding: 10px;
+            background-color: #e8f4f8;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .module-status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .status-loading {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-loaded {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .animation-bus {
+            position: relative;
+            height: 100px;
+            background: linear-gradient(90deg, #ff6b6b, #ffa726);
+            border-radius: 50px 10px 10px 50px;
+            margin: 20px 0;
+            overflow: hidden;
+            transition: transform 0.5s;
+        }
+        .bus-windows {
+            display: flex;
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            gap: 10px;
+        }
+        .window {
+            width: 40px;
+            height: 30px;
+            background-color: #e3f2fd;
+            border: 2px solid #2196F3;
+            border-radius: 5px;
+        }
+        .bus-doors {
+            position: absolute;
+            bottom: 0;
+            right: 20px;
+            width: 40px;
+            height: 60px;
+            background-color: #1e88e5;
+            border: 2px solid #0d47a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Моделювання автобуса - Динамічний імпорт модуля</h1>
+        
+        <div class="status-bar">
+            <div>
+                <strong>Статус модуля:</strong>
+                <span class="module-status status-loading" id="moduleStatus">Не завантажено</span>
+            </div>
+            <button onclick="loadBusModule()" id="loadModuleBtn">Завантажити модуль</button>
+        </div>
+        
+        <div class="control-panel">
+            <div class="panel-section">
+                <h3>Керування автобусом</h3>
+                <div class="form-group">
+                    <label>Номер автобуса:</label>
+                    <input type="text" id="busNumber" value="AA 1234 BC">
+                </div>
+                <div class="form-group">
+                    <label>Маршрут:</label>
+                    <input type="text" id="busRoute" value="№42 Центр - Вокзал">
+                </div>
+                <div class="form-group">
+                    <label>Кількість місць:</label>
+                    <input type="number" id="busSeats" value="20" min="1" max="50">
+                </div>
+                
+                <div class="actions">
+                    <button class="bus-btn" onclick="createBus()" disabled id="createBusBtn">Створити автобус</button>
+                    <button class="danger-btn" onclick="clearBus()" disabled id="clearBusBtn">Очистити автобус</button>
+                </div>
+                
+                <div class="actions">
+                    <button onclick="busStart()" disabled id="startBusBtn">Почати маршрут</button>
+                    <button onclick="busStop()" disabled id="stopBusBtn">Зупинити</button>
+                    <button onclick="nextStop()" disabled id="nextStopBtn">Наступна зупинка</button>
+                </div>
+            </div>
+            
+            <div class="panel-section">
+                <h3>Керування пасажирами</h3>
+                <div class="form-group">
+                    <label>Ім'я пасажира:</label>
+                    <input type="text" id="passengerName" placeholder="Введіть ім'я">
+                </div>
+                <div class="form-group">
+                    <label>Вік пасажира:</label>
+                    <input type="number" id="passengerAge" value="25" min="0" max="120">
+                </div>
+                <div class="form-group">
+                    <label>Тип квитка:</label>
+                    <select id="ticketType">
+                        <option value="standard">Стандартний</option>
+                        <option value="student">Студентський</option>
+                        <option value="pensioner">Пільговий</option>
+                        <option value="child">Дитячий</option>
+                    </select>
+                </div>
+                
+                <div class="actions">
+                    <button class="passenger-btn" onclick="addPassenger()" disabled id="addPassengerBtn">Додати пасажира</button>
+                    <button onclick="removePassenger()" disabled id="removePassengerBtn">Видалити пасажира</button>
+                    <button onclick="showPassengerInfo()" disabled id="showPassengerBtn">Інформація</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="busDisplay" style="display: none;">
+            <div class="bus-display">
+                <h3>Автобус: <span id="displayBusNumber"></span></h3>
+                <div class="bus-info">
+                    <div class="info-card">
+                        <div class="info-value" id="infoRoute">—</div>
+                        <div class="info-label">Маршрут</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-value" id="infoStatus">—</div>
+                        <div class="info-label">Статус</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-value" id="infoPassengers">0/0</div>
+                        <div class="info-label">Пасажири</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-value" id="infoCurrentStop">—</div>
+                        <div class="info-label">Поточна зупинка</div>
+                    </div>
+                </div>
+                
+                <div class="animation-bus" id="animatedBus">
+                    <div class="bus-windows">
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                    </div>
+                    <div class="bus-doors"></div>
+                </div>
+                
+                <h4>Місця в автобусі:</h4>
+                <div class="bus-seats" id="busSeatsDisplay"></div>
+                
+                <div class="passengers-display">
+                    <h4>Пасажири:</h4>
+                    <div id="passengersList"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="console">
+            <div class="console-title">Консоль подій:</div>
+            <div id="consoleOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        let busModule = null;
+        let currentBus = null;
+        let consoleOutput = '';
+        
+        function logToConsole(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            consoleOutput += logEntry;
+            document.getElementById('consoleOutput').textContent = consoleOutput;
+            document.getElementById('consoleOutput').scrollTop = document.getElementById('consoleOutput').scrollHeight;
+            console.log(message);
+        }
+        
+        function updateModuleStatus(status, message) {
+            const statusElement = document.getElementById('moduleStatus');
+            statusElement.className = 'module-status';
+            
+            switch(status) {
+                case 'loading':
+                    statusElement.classList.add('status-loading');
+                    statusElement.textContent = 'Завантаження...';
+                    break;
+                case 'loaded':
+                    statusElement.classList.add('status-loaded');
+                    statusElement.textContent = 'Завантажено ✓';
+                    enableControls();
+                    break;
+                case 'error':
+                    statusElement.classList.add('status-error');
+                    statusElement.textContent = 'Помилка завантаження';
+                    break;
+            }
+            
+            if (message) {
+                logToConsole(message);
+            }
+        }
+        
+        async function loadBusModule() {
+            updateModuleStatus('loading', 'Початок динамічного імпорту модуля...');
+            
+            try {
+                document.getElementById('loadModuleBtn').disabled = true;
+                
+                busModule = await import('./busModule.js');
+                
+                updateModuleStatus('loaded', 'Модуль успішно завантажено динамічно!');
+                logToConsole('Доступні класи з модуля: Bus, Passenger');
+                
+            } catch (error) {
+                updateModuleStatus('error', `Помилка завантаження модуля: ${error.message}`);
+                
+                busModule = createFallbackModule();
+                updateModuleStatus('loaded', 'Використовується резервний модуль');
+            }
+        }
+        
+        function createFallbackModule() {
+            logToConsole('Створення резервного модуля...');
+            
+            class Passenger {
+                constructor(name, age, ticketType = 'standard') {
+                    this.name = name;
+                    this.age = age;
+                    this.ticketType = ticketType;
+                    this.seatNumber = null;
+                    this.id = Date.now() + Math.random();
+                }
+                
+                getInfo() {
+                    return `${this.name}, ${this.age} років, квиток: ${this.ticketType}`;
+                }
+                
+                validateAge() {
+                    if (this.age < 0 || this.age > 120) return false;
+                    if (this.ticketType === 'child' && this.age > 12) return false;
+                    if (this.ticketType === 'student' && (this.age < 16 || this.age > 30)) return false;
+                    if (this.ticketType === 'pensioner' && this.age < 60) return false;
+                    return true;
+                }
+            }
+            
+            class Bus {
+                constructor(number, route, totalSeats) {
+                    this.number = number;
+                    this.route = route;
+                    this.totalSeats = totalSeats;
+                    this.passengers = [];
+                    this.currentStop = 'Депо';
+                    this.status = 'зупинено';
+                    this.stops = ['Депо', 'Центр', 'Вокзал', 'Університет', 'ТРЦ', 'Стадіон'];
+                    this.currentStopIndex = 0;
+                }
+                
+                addPassenger(passenger) {
+                    if (this.passengers.length >= this.totalSeats) {
+                        throw new Error('Автобус заповнений!');
+                    }
+                    
+                    if (!passenger.validateAge()) {
+                        throw new Error('Невірні дані пасажира');
+                    }
+                    
+                    passenger.seatNumber = this.passengers.length + 1;
+                    this.passengers.push(passenger);
+                    return true;
+                }
+                
+                removePassenger(passengerId) {
+                    const index = this.passengers.findIndex(p => p.id === passengerId);
+                    if (index === -1) return false;
+                    
+                    this.passengers.splice(index, 1);
+                    this.reassignSeats();
+                    return true;
+                }
+                
+                reassignSeats() {
+                    this.passengers.forEach((passenger, index) => {
+                        passenger.seatNumber = index + 1;
+                    });
+                }
+                
+                startRoute() {
+                    this.status = 'в дорозі';
+                    this.currentStop = this.stops[0];
+                    return true;
+                }
+                
+                nextStop() {
+                    if (this.currentStopIndex >= this.stops.length - 1) {
+                        this.status = 'кінцева';
+                        return false;
+                    }
+                    
+                    this.currentStopIndex++;
+                    this.currentStop = this.stops[this.currentStopIndex];
+                    return true;
+                }
+                
+                stopBus() {
+                    this.status = 'зупинено';
+                    return true;
+                }
+                
+                getPassengerCount() {
+                    return this.passengers.length;
+                }
+                
+                getBusInfo() {
+                    return {
+                        number: this.number,
+                        route: this.route,
+                        status: this.status,
+                        currentStop: this.currentStop,
+                        passengers: this.getPassengerCount(),
+                        totalSeats: this.totalSeats
+                    };
+                }
+            }
+            
+            return { Bus, Passenger };
+        }
+        
+        function enableControls() {
+            document.getElementById('createBusBtn').disabled = false;
+            document.getElementById('addPassengerBtn').disabled = false;
+            document.getElementById('loadModuleBtn').disabled = true;
+            logToConsole('Елементи керування активовані');
+        }
+        
+        function createBus() {
+            const number = document.getElementById('busNumber').value;
+            const route = document.getElementById('busRoute').value;
+            const seats = parseInt(document.getElementById('busSeats').value);
+            
+            if (!number || !route || seats < 1) {
+                alert('Будь ласка, заповніть всі поля коректно');
+                return;
+            }
+            
+            currentBus = new busModule.Bus(number, route, seats);
+            
+            document.getElementById('busDisplay').style.display = 'block';
+            document.getElementById('clearBusBtn').disabled = false;
+            document.getElementById('startBusBtn').disabled = false;
+            document.getElementById('removePassengerBtn').disabled = false;
+            document.getElementById('showPassengerBtn').disabled = false;
+            document.getElementById('nextStopBtn').disabled = true;
+            document.getElementById('stopBusBtn').disabled = true;
+            
+            updateBusDisplay();
+            logToConsole(`Створено автобус: ${number}, маршрут: ${route}, місць: ${seats}`);
+        }
+        
+        function addPassenger() {
+            if (!currentBus) {
+                alert('Спочатку створіть автобус!');
+                return;
+            }
+            
+            const name = document.getElementById('passengerName').value;
+            const age = parseInt(document.getElementById('passengerAge').value);
+            const ticketType = document.getElementById('ticketType').value;
+            
+            if (!name || !age) {
+                alert('Будь ласка, заповніть ім\'я та вік пасажира');
+                return;
+            }
+            
+            try {
+                const passenger = new busModule.Passenger(name, age, ticketType);
+                currentBus.addPassenger(passenger);
+                
+                updateBusDisplay();
+                logToConsole(`Додано пасажира: ${name} (${age} років, ${ticketType} квиток)`);
+                
+                document.getElementById('passengerName').value = '';
+                
+            } catch (error) {
+                alert(`Помилка: ${error.message}`);
+                logToConsole(`Помилка додавання пасажира: ${error.message}`);
+            }
+        }
+        
+        function removePassenger() {
+            if (!currentBus || currentBus.passengers.length === 0) {
+                alert('Немає пасажирів для видалення');
+                return;
+            }
+            
+            const lastPassenger = currentBus.passengers[currentBus.passengers.length - 1];
+            if (currentBus.removePassenger(lastPassenger.id)) {
+                updateBusDisplay();
+                logToConsole(`Видалено пасажира: ${lastPassenger.name}`);
+            }
+        }
+        
+        function showPassengerInfo() {
+            if (!currentBus || currentBus.passengers.length === 0) {
+                alert('Немає пасажирів в автобусі');
+                return;
+            }
+            
+            let info = 'Пасажири в автобусі:\n';
+            currentBus.passengers.forEach(p => {
+                info += `• ${p.getInfo()}\n`;
+            });
+            
+            alert(info);
+            logToConsole('Відображено інформацію про пасажирів');
+        }
+        
+        function busStart() {
+            if (!currentBus) return;
+            
+            currentBus.startRoute();
+            document.getElementById('startBusBtn').disabled = true;
+            document.getElementById('stopBusBtn').disabled = false;
+            document.getElementById('nextStopBtn').disabled = false;
+            
+            updateBusDisplay();
+            animateBus();
+            logToConsole('Автобус почав маршрут');
+        }
+        
+        function busStop() {
+            if (!currentBus) return;
+            
+            currentBus.stopBus();
+            document.getElementById('startBusBtn').disabled = false;
+            document.getElementById('stopBusBtn').disabled = true;
+            document.getElementById('nextStopBtn').disabled = true;
+            
+            updateBusDisplay();
+            logToConsole('Автобус зупинено');
+        }
+        
+        function nextStop() {
+            if (!currentBus) return;
+            
+            const moved = currentBus.nextStop();
+            updateBusDisplay();
+            
+            if (moved) {
+                logToConsole(`Автобус прибув на зупинку: ${currentBus.currentStop}`);
+            } else {
+                logToConsole('Автобус досяг кінцевої зупинки');
+            }
+        }
+        
+        function clearBus() {
+            if (currentBus && currentBus.passengers.length > 0) {
+                if (!confirm('Видалити всіх пасажирів?')) return;
+            }
+            
+            currentBus = null;
+            document.getElementById('busDisplay').style.display = 'none';
+            document.getElementById('clearBusBtn').disabled = true;
+            document.getElementById('startBusBtn').disabled = true;
+            document.getElementById('stopBusBtn').disabled = true;
+            document.getElementById('nextStopBtn').disabled = true;
+            document.getElementById('removePassengerBtn').disabled = true;
+            document.getElementById('showPassengerBtn').disabled = true;
+            
+            logToConsole('Автобус очищено');
+        }
+        
+        function updateBusDisplay() {
+            if (!currentBus) return;
+            
+            const info = currentBus.getBusInfo();
+            
+            document.getElementById('displayBusNumber').textContent = info.number;
+            document.getElementById('infoRoute').textContent = info.route;
+            document.getElementById('infoStatus').textContent = info.status;
+            document.getElementById('infoPassengers').textContent = `${info.passengers}/${info.totalSeats}`;
+            document.getElementById('infoCurrentStop').textContent = info.currentStop;
+            
+            updateSeatsDisplay();
+            updatePassengersList();
+        }
+        
+        function updateSeatsDisplay() {
+            const seatsContainer = document.getElementById('busSeatsDisplay');
+            seatsContainer.innerHTML = '';
+            
+            for (let i = 1; i <= currentBus.totalSeats; i++) {
+                const seat = document.createElement('div');
+                seat.className = 'seat';
+                
+                const passenger = currentBus.passengers.find(p => p.seatNumber === i);
+                
+                if (passenger) {
+                    seat.classList.add('occupied');
+                    seat.innerHTML = `
+                        <div class="seat-number">${i}</div>
+                        <div>${passenger.name}</div>
+                    `;
+                } else {
+                    seat.classList.add('empty');
+                    seat.innerHTML = `
+                        <div class="seat-number">${i}</div>
+                        <div>Вільне</div>
+                    `;
+                }
+                
+                seatsContainer.appendChild(seat);
+            }
+        }
+        
+        function updatePassengersList() {
+            const container = document.getElementById('passengersList');
+            container.innerHTML = '';
+            
+            currentBus.passengers.forEach(passenger => {
+                const card = document.createElement('div');
+                card.className = 'passenger-card';
+                card.innerHTML = `
+                    <div class="passenger-name">${passenger.name}</div>
+                    <div class="passenger-details">${passenger.age} років, ${passenger.ticketType}</div>
+                    <div class="passenger-details">Місце: ${passenger.seatNumber}</div>
+                `;
+                container.appendChild(card);
+            });
+            
+            if (currentBus.passengers.length === 0) {
+                container.innerHTML = '<p>Пасажирів немає</p>';
+            }
+        }
+        
+        function animateBus() {
+            const bus = document.getElementById('animatedBus');
+            if (currentBus && currentBus.status === 'в дорозі') {
+                bus.style.transform = 'translateX(20px)';
+                setTimeout(() => bus.style.transform = 'translateX(0)', 500);
+            }
+        }
+        
+        window.onload = function() {
+            logToConsole('Система моделювання автобуса готова');
+            logToConsole('Натисніть "Завантажити модуль" для початку роботи');
+        };
+    </script>
+</body>
+</html>
