@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Асинхронне генерування чисел</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .control-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        button.stop {
+            background-color: #f44336;
+        }
+        button.stop:hover {
+            background-color: #d32f2f;
+        }
+        .stats {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .numbers-container {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+        }
+        .number-box {
+            padding: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s;
+        }
+        .number-box.even {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .number-box.odd {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .progress-container {
+            margin: 20px 0;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.3s;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+            font-size: 12px;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .slider-container {
+            flex: 1;
+            min-width: 200px;
+        }
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        .console {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #343a40;
+            color: #f8f9fa;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .console-title {
+            color: #20c997;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Асинхронне генерування чисел</h1>
+        
+        <div class="control-section">
+            <h2>Контроль генерації</h2>
+            
+            <div class="controls">
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Затримка: <span id="delayValue">500</span> мс</span>
+                        <span>(0.5 сек)</span>
+                    </div>
+                    <input type="range" id="delaySlider" min="100" max="2000" value="500" step="100">
+                </div>
+                
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Кількість чисел: <span id="countValue">100</span></span>
+                    </div>
+                    <input type="range" id="countSlider" min="10" max="200" value="100" step="10">
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button id="startBtn" onclick="startGeneration()">Почати генерацію</button>
+                <button id="stopBtn" class="stop" onclick="stopGeneration()" disabled>Зупинити</button>
+                <button onclick="clearNumbers()">Очистити</button>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar">0%</div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="generatedCount">0</div>
+                    <div class="stat-label">Згенеровано</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="currentDelay">500</div>
+                    <div class="stat-label">Затримка (мс)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="evenCount">0</div>
+                    <div class="stat-label">Парних чисел</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="oddCount">0</div>
+                    <div class="stat-label">Непарних чисел</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="numbers-container">
+            <h3>Згенеровані числа:</h3>
+            <div class="numbers-grid" id="numbersGrid"></div>
+        </div>
+        
+        <div class="console">
+            <div class="console-title">Консоль логів:</div>
+            <div id="consoleOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        let isGenerating = false;
+        let stopGenerationFlag = false;
+        let generatedNumbers = [];
+        let consoleOutput = '';
+        let currentDelay = 500;
+        let totalNumbers = 100;
+        
+        const delaySlider = document.getElementById('delaySlider');
+        const countSlider = document.getElementById('countSlider');
+        const delayValue = document.getElementById('delayValue');
+        const countValue = document.getElementById('countValue');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        
+        function logToConsole(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            consoleOutput += logEntry;
+            document.getElementById('consoleOutput').textContent = consoleOutput;
+            document.getElementById('consoleOutput').scrollTop = document.getElementById('consoleOutput').scrollHeight;
+            console.log(message);
+        }
+        
+        function updateStats() {
+            const evenCount = generatedNumbers.filter(num => num % 2 === 0).length;
+            const oddCount = generatedNumbers.length - evenCount;
+            
+            document.getElementById('generatedCount').textContent = generatedNumbers.length;
+            document.getElementById('evenCount').textContent = evenCount;
+            document.getElementById('oddCount').textContent = oddCount;
+            document.getElementById('currentDelay').textContent = currentDelay;
+            
+            const progress = (generatedNumbers.length / totalNumbers) * 100;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${Math.round(progress)}%`;
+        }
+        
+        function addNumberToGrid(number) {
+            const numbersGrid = document.getElementById('numbersGrid');
+            const numberBox = document.createElement('div');
+            numberBox.className = `number-box ${number % 2 === 0 ? 'even' : 'odd'}`;
+            numberBox.textContent = number;
+            numbersGrid.appendChild(numberBox);
+        }
+        
+        async function generateRandomNumbersAsync(count, delay) {
+            logToConsole(`Початок асинхронної генерації ${count} чисел з затримкою ${delay}мс`);
+            
+            generatedNumbers = [];
+            document.getElementById('numbersGrid').innerHTML = '';
+            updateStats();
+            
+            for (let i = 0; i < count; i++) {
+                if (stopGenerationFlag) {
+                    logToConsole('Генерацію зупинено користувачем');
+                    break;
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, delay));
+                
+                const randomNumber = Math.floor(Math.random() * 1000) + 1;
+                generatedNumbers.push(randomNumber);
+                
+                addNumberToGrid(randomNumber);
+                updateStats();
+                
+                logToConsole(`Згенеровано число ${i + 1}/${count}: ${randomNumber}`);
+            }
+            
+            if (!stopGenerationFlag) {
+                logToConsole(`Генерацію завершено! Усього згенеровано ${generatedNumbers.length} чисел`);
+            }
+            
+            return generatedNumbers;
+        }
+        
+        function startGeneration() {
+            if (isGenerating) {
+                logToConsole('Генерація вже запущена!');
+                return;
+            }
+            
+            stopGenerationFlag = false;
+            isGenerating = true;
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            
+            logToConsole('Основна функція запускає асинхронну генерацію...');
+            
+            generateRandomNumbersAsync(totalNumbers, currentDelay)
+                .then(numbers => {
+                    logToConsole(`Асинхронна функція повернула ${numbers.length} чисел`);
+                    logToConsole(`Мінімальне: ${Math.min(...numbers)}`);
+                    logToConsole(`Максимальне: ${Math.max(...numbers)}`);
+                    logToConsole(`Середнє: ${(numbers.reduce((a, b) => a + b, 0) / numbers.length).toFixed(2)}`);
+                })
+                .catch(error => {
+                    logToConsole(`Помилка: ${error.message}`);
+                })
+                .finally(() => {
+                    isGenerating = false;
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    logToConsole('Генерація завершена або зупинена');
+                });
+        }
+        
+        function stopGeneration() {
+            if (!isGenerating) return;
+            
+            stopGenerationFlag = true;
+            logToConsole('Запит на зупинку генерації...');
+        }
+        
+        function clearNumbers() {
+            generatedNumbers = [];
+            document.getElementById('numbersGrid').innerHTML = '';
+            updateStats();
+            logToConsole('Всі числа очищено');
+        }
+        
+        delaySlider.addEventListener('input', function() {
+            currentDelay = parseInt(this.value);
+            delayValue.textContent = currentDelay;
+            logToConsole(`Затримку змінено на ${currentDelay} мс`);
+        });
+        
+        countSlider.addEventListener('input', function() {
+            totalNumbers = parseInt(this.value);
+            countValue.textContent = totalNumbers;
+            logToConsole(`Кількість чисел змінено на ${totalNumbers}`);
+            updateStats();
+        });
+        
+        window.onload = function() {
+            logToConsole('Сторінка завантажена. Готовий до генерації чисел!');
+            updateStats();
+        };
+    </script>
+</body>
+</html>
