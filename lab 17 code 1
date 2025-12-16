@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Зміна кольору зображення</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        select {
+            padding: 12px;
+            width: 250px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: white;
+        }
+        select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .image-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+        #colorBox {
+            width: 300px;
+            height: 200px;
+            margin: 0 auto;
+            border: 3px solid #ddd;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #666;
+            transition: background-color 0.3s ease;
+        }
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            vertical-align: middle;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .color-option {
+            padding: 8px;
+        }
+        .current-color {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .color-name {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.reset {
+            background-color: #f44336;
+        }
+        button.reset:hover {
+            background-color: #d32f2f;
+        }
+        .instructions {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Зміна кольору зображення</h1>
+        
+        <div class="instructions">
+            <p>Оберіть колір з випадаючого списку, щоб змінити колір зображення</p>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-group">
+                <label for="colorSelect">Оберіть колір:</label>
+                <select id="colorSelect" onchange="changeImageColor()">
+                    <option value="#f0f0f0">Сірий</option>
+                    <option value="#ff0000">Червоний</option>
+                    <option value="#00ff00">Зелений</option>
+                    <option value="#0000ff">Синій</option>
+                    <option value="#ffff00">Жовтий</option>
+                    <option value="#ff00ff">Пурпурний</option>
+                    <option value="#00ffff">Бірюзовий</option>
+                    <option value="#ffa500">Помаранчевий</option>
+                    <option value="#800080">Фіолетовий</option>
+                    <option value="#008080">Морської хвилі</option>
+                    <option value="#a52a2a">Коричневий</option>
+                    <option value="#000000">Чорний</option>
+                    <option value="#ffffff">Білий</option>
+                </select>
+            </div>
+            
+            <button onclick="applyRandomColor()">Випадковий колір</button>
+            <button onclick="resetColor()" class="reset">Скинути</button>
+            
+            <div class="image-container">
+                <div id="colorBox">Зображення</div>
+            </div>
+            
+            <div class="current-color">
+                <p>Поточний колір: <span id="currentColor" class="color-name">Сірий</span></p>
+                <p>HEX код: <code id="hexCode">#f0f0f0</code></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const colorNames = {
+            '#f0f0f0': 'Сірий',
+            '#ff0000': 'Червоний',
+            '#00ff00': 'Зелений',
+            '#0000ff': 'Синій',
+            '#ffff00': 'Жовтий',
+            '#ff00ff': 'Пурпурний',
+            '#00ffff': 'Бірюзовий',
+            '#ffa500': 'Помаранчевий',
+            '#800080': 'Фіолетовий',
+            '#008080': 'Морської хвилі',
+            '#a52a2a': 'Коричневий',
+            '#000000': 'Чорний',
+            '#ffffff': 'Білий'
+        };
+
+        function changeImageColor() {
+            const colorSelect = document.getElementById('colorSelect');
+            const selectedColor = colorSelect.value;
+            const colorBox = document.getElementById('colorBox');
+            const currentColorSpan = document.getElementById('currentColor');
+            const hexCodeSpan = document.getElementById('hexCode');
+            
+            const colorName = colorNames[selectedColor] || 'Невідомий колір';
+            
+            colorBox.style.backgroundColor = selectedColor;
+            currentColorSpan.textContent = colorName;
+            currentColorSpan.style.backgroundColor = selectedColor;
+            hexCodeSpan.textContent = selectedColor;
+            
+            const textColor = getContrastColor(selectedColor);
+            currentColorSpan.style.color = textColor;
+            colorBox.style.color = textColor;
+        }
+
+        function getContrastColor(hexColor) {
+            if (hexColor === '#ffffff') return '#000000';
+            if (hexColor === '#000000') return '#ffffff';
+            
+            const r = parseInt(hexColor.substr(1, 2), 16);
+            const g = parseInt(hexColor.substr(3, 2), 16);
+            const b = parseInt(hexColor.substr(5, 2), 16);
+            
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            
+            return luminance > 0.5 ? '#000000' : '#ffffff';
+        }
+
+        function applyRandomColor() {
+            const colors = Object.keys(colorNames);
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            const colorSelect = document.getElementById('colorSelect');
+            colorSelect.value = randomColor;
+            
+            changeImageColor();
+        }
+
+        function resetColor() {
+            const colorSelect = document.getElementById('colorSelect');
+            colorSelect.value = '#f0f0f0';
+            
+            changeImageColor();
+        }
+
+        window.onload = function() {
+            changeImageColor();
+        };
+    </script>
+</body>
+</html>
