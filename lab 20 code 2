@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Асинхронне генерування чисел - 2 версії</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 40px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4CAF50;
+        }
+        .versions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .version-container {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .control-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        button.stop {
+            background-color: #f44336;
+        }
+        button.stop:hover {
+            background-color: #d32f2f;
+        }
+        button.then-btn {
+            background-color: #2196F3;
+        }
+        button.then-btn:hover {
+            background-color: #0b7dda;
+        }
+        button.await-btn {
+            background-color: #9C27B0;
+        }
+        button.await-btn:hover {
+            background-color: #7B1FA2;
+        }
+        .stats {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .numbers-container {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            height: 300px;
+            overflow-y: auto;
+        }
+        .numbers-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 8px;
+        }
+        .number-item {
+            padding: 8px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s;
+        }
+        .number-item.even {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .number-item.odd {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .progress-container {
+            margin: 20px 0;
+            height: 15px;
+            background-color: #e9ecef;
+            border-radius: 7px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .console {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #343a40;
+            color: #f8f9fa;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .console-title {
+            color: #20c997;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .method-info {
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .code-example {
+            background-color: #2d2d2d;
+            color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .highlight {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .comparison {
+            margin: 30px 0;
+        }
+        .comparison-item {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Асинхронне генерування чисел - 2 версії</h1>
+        
+        <div class="method-info">
+            <h3>Дві версії реалізації:</h3>
+            <p><strong>1. З використанням .then()</strong> - класичний підхід з промісами</p>
+            <p><strong>2. З використанням async/await</strong> - сучасний підхід з синтаксичним цукром</p>
+        </div>
+        
+        <div class="control-section">
+            <h2>Загальні налаштування</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalNumbers">100</div>
+                    <div class="stat-label">Кількість чисел</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="currentDelay">500</div>
+                    <div class="stat-label">Затримка (мс)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="status">Готово</div>
+                    <div class="stat-label">Статус</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="versions">
+            <div class="version-container">
+                <h2>Версія 1: .then()</h2>
+                <p>Класичний підхід з ланцюжками промісів</p>
+                
+                <div class="buttons">
+                    <button class="then-btn" onclick="startThenVersion()">Запустити з .then()</button>
+                    <button class="stop" onclick="stopThenVersion()" disabled id="stopThenBtn">Зупинити</button>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressThen">0%</div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="thenCount">0</div>
+                        <div class="stat-label">Згенеровано</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="thenTime">0</div>
+                        <div class="stat-label">Час (сек)</div>
+                    </div>
+                </div>
+                
+                <h3>Числа (then):</h3>
+                <div class="numbers-container">
+                    <div class="numbers-list" id="numbersThen"></div>
+                </div>
+            </div>
+            
+            <div class="version-container">
+                <h2>Версія 2: async/await</h2>
+                <p>Сучасний синтаксис з async/await</p>
+                
+                <div class="buttons">
+                    <button class="await-btn" onclick="startAwaitVersion()">Запустити з await</button>
+                    <button class="stop" onclick="stopAwaitVersion()" disabled id="stopAwaitBtn">Зупинити</button>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressAwait">0%</div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="awaitCount">0</div>
+                        <div class="stat-label">Згенеровано</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="awaitTime">0</div>
+                        <div class="stat-label">Час (сек)</div>
+                    </div>
+                </div>
+                
+                <h3>Числа (await):</h3>
+                <div class="numbers-container">
+                    <div class="numbers-list" id="numbersAwait"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison">
+            <h2>Порівняння результатів</h2>
+            <div class="comparison-item">
+                <strong>Версія .then():</strong> <span id="thenResult">Не виконано</span>
+            </div>
+            <div class="comparison-item">
+                <strong>Версія async/await:</strong> <span id="awaitResult">Не виконано</span>
+            </div>
+            <div class="comparison-item">
+                <strong>Різниця у часі:</strong> <span id="timeDiff">-</span>
+            </div>
+        </div>
+        
+        <div class="console">
+            <div class="console-title">Консоль логів:</div>
+            <div id="consoleOutput"></div>
+        </div>
+        
+        <div class="code-example">
+            // Версія з .then()
+            function generateNumbersThen() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const number = generateRandomNumber();
+                        resolve(number);
+                    }, delay);
+                });
+            }
+            
+            // Версія з async/await
+            async function generateNumbersAwait() {
+                await sleep(delay);
+                return generateRandomNumber();
+            }
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_NUMBERS = 100;
+        const DELAY = 500;
+        
+        let thenGenerating = false;
+        let awaitGenerating = false;
+        let thenStopFlag = false;
+        let awaitStopFlag = false;
+        let thenNumbers = [];
+        let awaitNumbers = [];
+        let consoleOutput = '';
+        let thenStartTime = 0;
+        let awaitStartTime = 0;
+        
+        function logToConsole(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            consoleOutput += logEntry;
+            document.getElementById('consoleOutput').textContent = consoleOutput;
+            document.getElementById('consoleOutput').scrollTop = document.getElementById('consoleOutput').scrollHeight;
+            console.log(message);
+        }
+        
+        function generateRandomNumber() {
+            return Math.floor(Math.random() * 1000) + 1;
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        function addNumberToGrid(number, version, isEven) {
+            const containerId = version === 'then' ? 'numbersThen' : 'numbersAwait';
+            const container = document.getElementById(containerId);
+            const numberElement = document.createElement('div');
+            numberElement.className = `number-item ${isEven ? 'even' : 'odd'}`;
+            numberElement.textContent = number;
+            container.appendChild(numberElement);
+        }
+        
+        function updateProgress(version, count) {
+            const progress = (count / TOTAL_NUMBERS) * 100;
+            const progressBar = document.getElementById(`progress${version.charAt(0).toUpperCase() + version.slice(1)}`);
+            progressBar.style.width = `${progress}%`;
+            
+            const countElement = document.getElementById(`${version}Count`);
+            countElement.textContent = count;
+            
+            const timeElement = document.getElementById(`${version}Time`);
+            const elapsedTime = version === 'then' 
+                ? (Date.now() - thenStartTime) / 1000 
+                : (Date.now() - awaitStartTime) / 1000;
+            timeElement.textContent = elapsedTime.toFixed(2);
+            
+            document.getElementById('status').textContent = version === 'then' ? 'Виконується .then()' : 'Виконується await';
+        }
+        
+        // ВЕРСІЯ 1: З використанням .then()
+        function generateNumbersWithThen() {
+            return new Promise((resolve) => {
+                thenNumbers = [];
+                document.getElementById('numbersThen').innerHTML = '';
+                thenStartTime = Date.now();
+                
+                logToConsole('=== Початок генерації з .then() ===');
+                
+                function generateNextNumber(index) {
+                    if (index >= TOTAL_NUMBERS || thenStopFlag) {
+                        const timeTaken = (Date.now() - thenStartTime) / 1000;
+                        logToConsole(`Генерація з .then() завершена за ${timeTaken.toFixed(2)} сек`);
+                        resolve({ numbers: thenNumbers, time: timeTaken });
+                        return;
+                    }
+                    
+                    new Promise((resolveDelay) => {
+                        setTimeout(() => {
+                            resolveDelay();
+                        }, DELAY);
+                    })
+                    .then(() => {
+                        if (thenStopFlag) return;
+                        
+                        const number = generateRandomNumber();
+                        thenNumbers.push(number);
+                        
+                        addNumberToGrid(number, 'then', number % 2 === 0);
+                        updateProgress('then', index + 1);
+                        
+                        logToConsole(`[.then()] Згенеровано число ${index + 1}: ${number}`);
+                        
+                        generateNextNumber(index + 1);
+                    });
+                }
+                
+                generateNextNumber(0);
+            });
+        }
+        
+        // ВЕРСІЯ 2: З використанням async/await
+        async function generateNumbersWithAwait() {
+            awaitNumbers = [];
+            document.getElementById('numbersAwait').innerHTML = '';
+            awaitStartTime = Date.now();
+            
+            logToConsole('=== Початок генерації з async/await ===');
+            
+            try {
+                for (let i = 0; i < TOTAL_NUMBERS; i++) {
+                    if (awaitStopFlag) {
+                        logToConsole('Генерація з await зупинена користувачем');
+                        break;
+                    }
+                    
+                    await sleep(DELAY);
+                    
+                    const number = generateRandomNumber();
+                    awaitNumbers.push(number);
+                    
+                    addNumberToGrid(number, 'await', number % 2 === 0);
+                    updateProgress('await', i + 1);
+                    
+                    logToConsole(`[await] Згенеровано число ${i + 1}: ${number}`);
+                }
+                
+                const timeTaken = (Date.now() - awaitStartTime) / 1000;
+                logToConsole(`Генерація з await завершена за ${timeTaken.toFixed(2)} сек`);
+                
+                return { numbers: awaitNumbers, time: timeTaken };
+                
+            } catch (error) {
+                logToConsole(`Помилка в await версії: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        // Запуск версії з .then()
+        function startThenVersion() {
+            if (thenGenerating) return;
+            
+            thenGenerating = true;
+            thenStopFlag = false;
+            document.getElementById('stopThenBtn').disabled = false;
+            document.querySelector('.then-btn').disabled = true;
+            
+            logToConsole('Запуск основної функції з .then()...');
+            
+            generateNumbersWithThen()
+                .then(result => {
+                    document.getElementById('thenResult').textContent = 
+                        `Згенеровано ${result.numbers.length} чисел за ${result.time.toFixed(2)} сек`;
+                    document.getElementById('thenResult').style.color = '#4CAF50';
+                })
+                .catch(error => {
+                    logToConsole(`Помилка: ${error.message}`);
+                    document.getElementById('thenResult').textContent = 'Помилка виконання';
+                    document.getElementById('thenResult').style.color = '#f44336';
+                })
+                .finally(() => {
+                    thenGenerating = false;
+                    document.getElementById('stopThenBtn').disabled = true;
+                    document.querySelector('.then-btn').disabled = false;
+                    document.getElementById('status').textContent = 'Готово';
+                    compareResults();
+                });
+        }
+        
+        // Запуск версії з async/await
+        async function startAwaitVersion() {
+            if (awaitGenerating) return;
+            
+            awaitGenerating = true;
+            awaitStopFlag = false;
+            document.getElementById('stopAwaitBtn').disabled = false;
+            document.querySelector('.await-btn').disabled = true;
+            
+            logToConsole('Запуск основної функції з async/await...');
+            
+            try {
+                const result = await generateNumbersWithAwait();
+                document.getElementById('awaitResult').textContent = 
+                    `Згенеровано ${result.numbers.length} чисел за ${result.time.toFixed(2)} сек`;
+                document.getElementById('awaitResult').style.color = '#4CAF50';
+            } catch (error) {
+                logToConsole(`Помилка: ${error.message}`);
+                document.getElementById('awaitResult').textContent = 'Помилка виконання';
+                document.getElementById('awaitResult').style.color = '#f44336';
+            } finally {
+                awaitGenerating = false;
+                document.getElementById('stopAwaitBtn').disabled = true;
+                document.querySelector('.await-btn').disabled = false;
+                document.getElementById('status').textContent = 'Готово';
+                compareResults();
+            }
+        }
+        
+        function stopThenVersion() {
+            thenStopFlag = true;
+            logToConsole('Зупинка версії з .then()...');
+        }
+        
+        function stopAwaitVersion() {
+            awaitStopFlag = true;
+            logToConsole('Зупинка версії з async/await...');
+        }
+        
+        function compareResults() {
+            if (thenNumbers.length > 0 && awaitNumbers.length > 0) {
+                const thenTime = parseFloat(document.getElementById('thenTime').textContent);
+                const awaitTime = parseFloat(document.getElementById('awaitTime').textContent);
+                const diff = Math.abs(thenTime - awaitTime);
+                
+                document.getElementById('timeDiff').textContent = `${diff.toFixed(2)} сек`;
+                document.getElementById('timeDiff').style.color = diff < 0.1 ? '#4CAF50' : '#ff9800';
+                
+                const thenSum = thenNumbers.reduce((a, b) => a + b, 0);
+                const awaitSum = awaitNumbers.reduce((a, b) => a + b, 0);
+                
+                logToConsole(`=== ПОРІВНЯННЯ ===`);
+                logToConsole(`.then(): ${thenNumbers.length} чисел, середнє: ${(thenSum/thenNumbers.length).toFixed(2)}`);
+                logToConsole(`await: ${awaitNumbers.length} чисел, середнє: ${(awaitSum/awaitNumbers.length).toFixed(2)}`);
+                logToConsole(`Різниця в часі: ${diff.toFixed(2)} сек`);
+            }
+        }
+        
+        window.onload = function() {
+            logToConsole('Сторінка завантажена. Дві версії готові до роботи!');
+            document.getElementById('totalNumbers').textContent = TOTAL_NUMBERS;
+            document.getElementById('currentDelay').textContent = DELAY;
+        };
+    </script>
+</body>
+</html>
