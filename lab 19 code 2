@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebStorage - Улюблене місто</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .storage-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        input {
+            padding: 12px;
+            width: 300px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .buttons {
+            margin: 30px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.reset {
+            background-color: #f44336;
+        }
+        button.reset:hover {
+            background-color: #d32f2f;
+        }
+        button.info {
+            background-color: #2196F3;
+        }
+        button.info:hover {
+            background-color: #0b7dda;
+        }
+        .display-section {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #e8f4f8;
+        }
+        .city-display {
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .city-name {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .city-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        .storage-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        .info-item {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+        }
+        .info-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            color: #666;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .storage-type {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .storage-btn {
+            flex: 1;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .storage-btn.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #45a049;
+        }
+        .example-cities {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .example-city {
+            padding: 8px 16px;
+            background-color: #e9ecef;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .example-city:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WebStorage - Улюблене місто</h1>
+        
+        <div class="storage-section">
+            <h2>Записати улюблене місто</h2>
+            
+            <div class="storage-type">
+                <div class="storage-btn active" id="localStorageBtn" onclick="setStorageType('local')">LocalStorage</div>
+                <div class="storage-btn" id="sessionStorageBtn" onclick="setStorageType('session')">SessionStorage</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="cityInput">Введіть ваше улюблене місто:</label>
+                <input type="text" id="cityInput" placeholder="Наприклад: Київ, Львів, Одеса...">
+            </div>
+            
+            <div class="example-cities">
+                <div class="example-city" onclick="setExampleCity('Київ')">Київ</div>
+                <div class="example-city" onclick="setExampleCity('Львів')">Львів</div>
+                <div class="example-city" onclick="setExampleCity('Одеса')">Одеса</div>
+                <div class="example-city" onclick="setExampleCity('Харків')">Харків</div>
+                <div class="example-city" onclick="setExampleCity('Дніпро')">Дніпро</div>
+                <div class="example-city" onclick="setExampleCity('Запоріжжя')">Запоріжжя</div>
+            </div>
+            
+            <div class="buttons">
+                <button onclick="saveCity()">Зберегти місто</button>
+                <button onclick="loadCity()" class="info">Завантажити місто</button>
+                <button onclick="clearStorage()" class="reset">Очистити</button>
+            </div>
+        </div>
+        
+        <div class="display-section">
+            <h2>Прочитати улюблене місто</h2>
+            
+            <div class="city-display">
+                <div class="city-label">Ваше улюблене місто:</div>
+                <div class="city-name" id="displayedCity">Не встановлено</div>
+            </div>
+            
+            <div class="storage-info">
+                <div class="info-item">
+                    <div class="info-title">Поточний тип сховища:</div>
+                    <div class="info-value" id="currentStorageType">LocalStorage</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-title">Ключ зберігання:</div>
+                    <div class="info-value">favoriteCity</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-title">Значення в LocalStorage:</div>
+                    <div class="info-value" id="localStorageValue">Не встановлено</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-title">Значення в SessionStorage:</div>
+                    <div class="info-value" id="sessionStorageValue">Не встановлено</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-title">Інформація:</div>
+                    <div class="info-value">
+                        <strong>LocalStorage:</strong> дані зберігаються назавжди (до очищення браузера)<br>
+                        <strong>SessionStorage:</strong> дані зберігаються лише протягом сесії
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStorage = localStorage;
+        let storageType = 'local';
+        
+        function setStorageType(type) {
+            storageType = type;
+            currentStorage = type === 'local' ? localStorage : sessionStorage;
+            
+            document.getElementById('localStorageBtn').classList.remove('active');
+            document.getElementById('sessionStorageBtn').classList.remove('active');
+            
+            if (type === 'local') {
+                document.getElementById('localStorageBtn').classList.add('active');
+                document.getElementById('currentStorageType').textContent = 'LocalStorage';
+            } else {
+                document.getElementById('sessionStorageBtn').classList.add('active');
+                document.getElementById('currentStorageType').textContent = 'SessionStorage';
+            }
+            
+            updateStorageInfo();
+            console.log(`Тип сховища змінено на: ${storageType === 'local' ? 'LocalStorage' : 'SessionStorage'}`);
+        }
+        
+        function saveCity() {
+            const cityInput = document.getElementById('cityInput');
+            const city = cityInput.value.trim();
+            
+            if (!city) {
+                alert('Будь ласка, введіть назву міста');
+                return;
+            }
+            
+            currentStorage.setItem('favoriteCity', city);
+            
+            if (storageType === 'local') {
+                console.log(`Місто "${city}" збережено в LocalStorage`);
+            } else {
+                console.log(`Місто "${city}" збережено в SessionStorage`);
+            }
+            
+            updateStorageInfo();
+            showNotification(`Місто "${city}" збережено!`);
+        }
+        
+        function loadCity() {
+            const city = currentStorage.getItem('favoriteCity');
+            
+            if (city) {
+                document.getElementById('displayedCity').textContent = city;
+                console.log(`Завантажено місто: ${city} з ${storageType === 'local' ? 'LocalStorage' : 'SessionStorage'}`);
+                showNotification(`Місто "${city}" завантажено!`);
+            } else {
+                document.getElementById('displayedCity').textContent = 'Не встановлено';
+                console.log(`Місто не знайдено в ${storageType === 'local' ? 'LocalStorage' : 'SessionStorage'}`);
+                showNotification('Місто не знайдено!', 'error');
+            }
+            
+            updateStorageInfo();
+        }
+        
+        function clearStorage() {
+            if (confirm(`Видалити місто з ${storageType === 'local' ? 'LocalStorage' : 'SessionStorage'}?`)) {
+                currentStorage.removeItem('favoriteCity');
+                document.getElementById('displayedCity').textContent = 'Не встановлено';
+                document.getElementById('cityInput').value = '';
+                
+                console.log(`Місто видалено з ${storageType === 'local' ? 'LocalStorage' : 'SessionStorage'}`);
+                updateStorageInfo();
+                showNotification('Місто видалено!', 'warning');
+            }
+        }
+        
+        function clearAllStorage() {
+            if (confirm('Очистити ВСЕ сховище (LocalStorage та SessionStorage)?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                document.getElementById('displayedCity').textContent = 'Не встановлено';
+                document.getElementById('cityInput').value = '';
+                
+                console.log('Всі сховища очищено');
+                updateStorageInfo();
+                showNotification('Всі сховища очищено!', 'warning');
+            }
+        }
+        
+        function setExampleCity(city) {
+            document.getElementById('cityInput').value = city;
+            console.log(`Встановлено приклад міста: ${city}`);
+        }
+        
+        function updateStorageInfo() {
+            const localStorageCity = localStorage.getItem('favoriteCity');
+            const sessionStorageCity = sessionStorage.getItem('favoriteCity');
+            
+            document.getElementById('localStorageValue').textContent = localStorageCity || 'Не встановлено';
+            document.getElementById('sessionStorageValue').textContent = sessionStorageCity || 'Не встановлено';
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background-color: ${type === 'error' ? '#f44336' : type === 'warning' ? '#ff9800' : '#4CAF50'};
+                color: white;
+                border-radius: 5px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        window.onload = function() {
+            updateStorageInfo();
+            console.log('Сторінка завантажена. WebStorage готовий до роботи.');
+            
+            const savedCity = localStorage.getItem('favoriteCity');
+            if (savedCity) {
+                document.getElementById('displayedCity').textContent = savedCity;
+                console.log(`Автоматично завантажено місто з LocalStorage: ${savedCity}`);
+            }
+        };
+    </script>
+</body>
+</html>
