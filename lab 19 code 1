@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Робота з Cookies</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            transition: font-size 0.3s;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .controls-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        select, input {
+            padding: 10px;
+            width: 250px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: white;
+        }
+        select:focus, input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .buttons {
+            margin: 30px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.reset {
+            background-color: #f44336;
+        }
+        button.reset:hover {
+            background-color: #d32f2f;
+        }
+        button.info {
+            background-color: #2196F3;
+        }
+        button.info:hover {
+            background-color: #0b7dda;
+        }
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #e8f4f8;
+        }
+        .cookies-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .current-settings {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+        }
+        .console-output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #343a40;
+            color: #f8f9fa;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .console-title {
+            color: #20c997;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .cookie-item {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Робота з Cookies</h1>
+        
+        <div class="controls-section">
+            <div class="form-group">
+                <label for="fontSize">Розмір шрифту:</label>
+                <select id="fontSize">
+                    <option value="14px">Маленький (14px)</option>
+                    <option value="16px" selected>Середній (16px)</option>
+                    <option value="18px">Великий (18px)</option>
+                    <option value="20px">Дуже великий (20px)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="language">Мова:</label>
+                <select id="language">
+                    <option value="uk-UA">Українська (Україна)</option>
+                    <option value="en-US">Англійська (США)</option>
+                    <option value="de-DE">Німецька (Німеччина)</option>
+                    <option value="fr-FR">Французька (Франція)</option>
+                    <option value="es-ES">Іспанська (Іспанія)</option>
+                    <option value="pl-PL">Польська (Польща)</option>
+                </select>
+            </div>
+            
+            <div class="buttons">
+                <button onclick="saveSettings()">Зберегти налаштування</button>
+                <button onclick="loadSettings()" class="info">Завантажити налаштування</button>
+                <button onclick="showConsoleInfo()" class="info">Показати в консолі</button>
+                <button onclick="clearCookies()" class="reset">Очистити Cookies</button>
+                <button onclick="showAllCookies()" class="info">Показати всі Cookies</button>
+            </div>
+        </div>
+        
+        <div class="result-section">
+            <h3>Поточні налаштування:</h3>
+            <div class="current-settings">
+                <p>Розмір шрифту: <strong id="currentFontSize">16px</strong></p>
+                <p>Мова та країна: <strong id="currentLanguage">uk-UA</strong></p>
+            </div>
+            
+            <h3>Інформація про Cookies:</h3>
+            <div class="cookies-info" id="cookiesInfo">
+                Cookies не знайдені
+            </div>
+            
+            <h3>Консольний вивід:</h3>
+            <div class="console-output">
+                <div class="console-title">Консоль JavaScript:</div>
+                <div id="consoleOutput">Тут відображатиметься вивід у консоль</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let consoleOutput = '';
+
+        function logToConsole(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            consoleOutput += `[${timestamp}] ${message}\n`;
+            document.getElementById('consoleOutput').textContent = consoleOutput;
+            console.log(message);
+        }
+
+        function get_cookie(name) {
+            var start = document.cookie.indexOf(name + "=");
+            var len = start + name.length + 1;
+            if ((!start) && (name != document.cookie.substring(0, name.length))) return null;
+            if (start == -1) return null;
+            var end = document.cookie.indexOf(";", len);
+            if (end == -1) end = document.cookie.length;
+            return unescape(document.cookie.substring(len, end));
+        }
+
+        function set_cookie(name, value) {
+            var argv = set_cookie.arguments;
+            var argc = set_cookie.arguments.length;
+            var expires = (argc > 2) ? argv[2] : null;
+            var path = (argc > 3) ? argv[3] : null;
+            var domain = (argc > 4) ? argv[4] : null;
+            var secure = (argc > 5) ? argv[5] : false;
+            
+            document.cookie = name + "=" + escape(value) +
+                ((expires == null) ? "" : ("; expires=" + expires.toGMTString())) +
+                ((path == null) ? "" : ("; path=" + path)) +
+                ((domain == null) ? "" : ("; domain=" + domain)) +
+                ((secure == true) ? "; secure" : "");
+        }
+
+        function saveSettings() {
+            const fontSize = document.getElementById('fontSize').value;
+            const language = document.getElementById('language').value;
+            
+            const expires = new Date();
+            expires.setDate(expires.getDate() + 7);
+            
+            set_cookie('fontSize', fontSize, expires, '/');
+            set_cookie('language', language, expires, '/');
+            
+            document.body.style.fontSize = fontSize;
+            document.getElementById('currentFontSize').textContent = fontSize;
+            document.getElementById('currentLanguage').textContent = language;
+            
+            logToConsole(`Налаштування збережено в cookies:`);
+            logToConsole(`  - Розмір шрифту: ${fontSize}`);
+            logToConsole(`  - Мова та країна: ${language}`);
+            
+            updateCookiesInfo();
+        }
+
+        function loadSettings() {
+            const fontSize = get_cookie('fontSize');
+            const language = get_cookie('language');
+            
+            if (fontSize) {
+                document.getElementById('fontSize').value = fontSize;
+                document.body.style.fontSize = fontSize;
+                document.getElementById('currentFontSize').textContent = fontSize;
+            }
+            
+            if (language) {
+                document.getElementById('language').value = language;
+                document.getElementById('currentLanguage').textContent = language;
+            }
+            
+            logToConsole(`Налаштування завантажені з cookies:`);
+            logToConsole(`  - Розмір шрифту: ${fontSize || 'не встановлено'}`);
+            logToConsole(`  - Мова та країна: ${language || 'не встановлено'}`);
+            
+            updateCookiesInfo();
+        }
+
+        function showConsoleInfo() {
+            const fontSize = get_cookie('fontSize');
+            const language = get_cookie('language');
+            
+            logToConsole(`=== ІНФОРМАЦІЯ З COOKIES ===`);
+            logToConsole(`Розмір шрифту: ${fontSize || 'не встановлено'}`);
+            logToConsole(`Мова та країна: ${language || 'не встановлено'}`);
+            logToConsole(`Всі cookies: ${document.cookie || 'відсутні'}`);
+            logToConsole(`==========================`);
+        }
+
+        function clearCookies() {
+            const cookies = document.cookie.split(";");
+            
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i];
+                const eqPos = cookie.indexOf("=");
+                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+            }
+            
+            document.body.style.fontSize = '16px';
+            document.getElementById('fontSize').value = '16px';
+            document.getElementById('language').value = 'uk-UA';
+            document.getElementById('currentFontSize').textContent = '16px';
+            document.getElementById('currentLanguage').textContent = 'uk-UA';
+            
+            logToConsole('Всі cookies були очищені');
+            updateCookiesInfo();
+        }
+
+        function showAllCookies() {
+            const cookies = document.cookie.split(";");
+            let cookiesHtml = '';
+            
+            if (document.cookie === '') {
+                cookiesHtml = 'Cookies відсутні';
+            } else {
+                cookies.forEach(cookie => {
+                    const [name, value] = cookie.trim().split('=');
+                    cookiesHtml += `<div class="cookie-item">
+                        <strong>${name}:</strong> ${unescape(value || '')}
+                    </div>`;
+                });
+            }
+            
+            document.getElementById('cookiesInfo').innerHTML = cookiesHtml;
+            logToConsole(`Відображено всі cookies (${cookies.length} шт.)`);
+        }
+
+        function updateCookiesInfo() {
+            const cookies = document.cookie.split(";");
+            let cookiesHtml = '';
+            
+            if (document.cookie === '') {
+                cookiesHtml = 'Cookies відсутні';
+            } else {
+                cookies.forEach(cookie => {
+                    const [name, value] = cookie.trim().split('=');
+                    cookiesHtml += `<div class="cookie-item">
+                        <strong>${name}:</strong> ${unescape(value || '')}
+                    </div>`;
+                });
+            }
+            
+            document.getElementById('cookiesInfo').innerHTML = cookiesHtml;
+        }
+
+        window.onload = function() {
+            loadSettings();
+            updateCookiesInfo();
+            logToConsole('Сторінка завантажена. Cookies завантажені.');
+        };
+    </script>
+</body>
+</html>
